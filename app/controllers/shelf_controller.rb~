@@ -68,11 +68,8 @@ class ShelfController < ApplicationController
     @shelf.listtype = 'image'
     @shelf.sorttype = 'recent'
     @shelf.save
-    # @entries_pages, @entrylist = paginate :entry, :per_page => 60, :conditions => ["shelf_id = ?", @shelf.id], :order_by => "modtime DESC"
-
-    @entrylist = Entry.paginate(:page => params[:page], :per_page => 50, :conditions => ["shelf_id = ?", @shelf.id], :order => "modtime DESC")
+    @entries_pages, @entrylist = paginate :entry, :per_page => 60, :conditions => ["shelf_id = ?", @shelf.id], :order_by => "modtime DESC"
   end
-
   def show_recent_text
     getshelf
     @shelf.listtype = 'text'
