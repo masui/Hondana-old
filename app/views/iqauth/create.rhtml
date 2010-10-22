@@ -2,10 +2,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>ユーザ認証</title>
-<script language="JavaScript" src="/javascripts/md5.js"></script>
-<script language="JavaScript" src="/javascripts/iqauth.js"></script>
-<script language="JavaScript" src="/javascripts/json.js"></script>
+<%= javascript_include_tag "md5" %>
+<%= javascript_include_tag "iqauth" %>
+<%= javascript_include_tag "json" %>
+
 <script type="text/javascript">
+var getdata = '<%= url_for :controller => 'iqauth', :action => 'getdata' %>';
+
 var id = '<%= @id %>';
 var password;
 var newpassword;
@@ -293,9 +296,9 @@ if(q.passhash != '' && q.data.length > 0){ // 問題がすでに定義されて�
 else {
   // サンプル問題を与えて問題作成
   q.data = [
-    ["http://farm1.static.flickr.com/54/121077554_eb0138d019.jpg",
+    ["http://gyazo.com/86279eee75f2d3c3742ba1b664e7a477.png",
       '大崎公園', '披露山公園', '源氏山公園', 'しおさい公園', '城ヶ島公園'],
-    ["http://farm1.static.flickr.com/48/107450833_2eb83a5e3b.jpg",
+    ["http://gyazo.com/669c1af6b8132e5e54bf80b90cf8c0bd.png",
       '真鶴', '逗子', '熱海', '下田', '伊東'],
   ];
   create(q); // なぞなぞ編集

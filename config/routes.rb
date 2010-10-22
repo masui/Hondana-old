@@ -59,9 +59,20 @@ ActionController::Routing::Routes.draw do |map|
               :controller => 'iqauth',
               :action => 'getdata'
 
-  map.connect 'bookshelf/search',
-              :controller => 'bookshelf',
-              :action => 'search'
+  #
+  # /bookshelf/... というURLはactionとみなすことにする
+  # /bookshelf/search, /bookshelf/alllist, etc.
+  #
+  map.connect 'bookshelf/:action',
+              :controller => 'bookshelf'
+
+#  map.connect 'bookshelf/search',
+#              :controller => 'bookshelf',
+#              :action => 'search'
+#
+#  map.connect 'bookshelf/alllist',
+#              :controller => 'bookshelf',
+#              :action => 'alllist'
 
   # http://hondana.org/masui
   map.connect ':shelfname/',

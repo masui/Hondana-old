@@ -15,6 +15,7 @@ class IqauthController < ApplicationController
     #dir = (Pathname.new($0).parent.parent+"db/iqauth").to_s # script/serverで起動したとき
     #dir = "db/iqauth" # thin で起動したとき
     dir = "#{RAILS_ROOT}/db/iqauth"
+
     file = hash(id)
     "#{dir}/#{file}.#{type}"
   end

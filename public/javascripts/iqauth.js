@@ -84,8 +84,10 @@ function IQAuth(id,iqpath){
 //  xmlhttp.overrideMimeType("text/xml; charset=utf-8"); // ?? よくわからない
   //request = iqpath + "/programs/getdata.cgi?id=" + escape(id);
   //request = iqpath + "/iqauth/getdata/" + escape(id);
-  request = "/iqauth/getdata/" + escape(id);
-  xmlhttp.open("GET", request, false); // 同期読出し
+
+  //request = "/iqauth/getdata/" + escape(id);
+
+  xmlhttp.open("GET", getdata, false); // 同期読出し
   xmlhttp.send(null);
 
   var d;
@@ -106,15 +108,15 @@ function IQAuth(id,iqpath){
  ];
  // データ追加のとき利用するサンプルデータ
  this.sample = [
-   ["http://farm1.static.flickr.com/54/121077554_eb0138d019.jpg",
+   ["http://gyazo.com/86279eee75f2d3c3742ba1b664e7a477.png",
      '大崎公園', '披露山公園', '源氏山公園', 'しおさい公園', '城ヶ島公園'],
-   ["http://farm1.static.flickr.com/48/107450833_2eb83a5e3b.jpg",
+   ["http://gyazo.com/669c1af6b8132e5e54bf80b90cf8c0bd.png",
      '真鶴', '逗子', '熱海', '下田', '伊東'],
-   ["http://pitecan.com/images/masui2.jpg",
+   ["http://gyazo.com/a9241803acf7b4ff3767f17eecdd283d.png",
      '増井', '小池',  '高田',  '山田',  '田中'],
-   ["http://farm1.static.flickr.com/40/118009174_eb5d1ad933.jpg",
+   ["http://gyazo.com/347e95389984ea592c35992160b65297.png",
      '九品寺', '妙本寺', '安国論寺', '光明寺', '浄智寺'],
-   ["http://farm1.static.flickr.com/38/89202281_d8edaca492.jpg",
+   ["http://gyazo.com/52b6c59767f271248615324ff927a33e.png",
      '千石', '千駄木', '駒込', '根津', '日暮里'],
  ];
 }
