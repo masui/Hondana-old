@@ -27,9 +27,7 @@
         <% @entrylist = Entry.find(:all, :conditions => ["shelf_id = ? and categories like ?", @shelf.id, "%"+@categories[i]+"%"]) %>
         <%= render :partial => 'imagelist' %>
       </div>
-      <!-- div class="shelf_h"><img src="/images/fms.gif" class="fms"></div-->
-    <!--/div-->
-    <!-- div id="shelf_shade"></div-->
+      <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
 
     <div id='menu_bottom'>
       <%= @entrylist = nil %>

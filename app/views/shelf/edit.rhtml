@@ -6,6 +6,7 @@
 
 <%= iqauth_js(@shelf,@book,@entry) %>
 <script type="text/javascript">
+var getdata = '<%= url_for :controller => 'iqauth', :action => 'getdata', :id => @shelf.id  %>';
 
 function getXmlHttpObject() {
   var xmlhttp;
