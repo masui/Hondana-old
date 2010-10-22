@@ -1,0 +1,26 @@
+<%= render :partial => 'shared/header' %>
+
+<div id='edit'>
+  <%= link_to '書籍追加', :action => 'newbooks' %> |
+  <%= link_to '本棚情報変更', :action => 'profile_edit' %> |
+  <%= link_to '名前変更/本棚削除', :action => 'rename' %> |
+  <%= link_to '類似本棚', :action => 'similar' %> |
+  <%= link_to 'ヘルプ', :action => 'help' %>
+</div>
+
+<div id="header">
+  <h1>
+    <% if @shelf.url.to_s != '' then %>
+      <a href="<%= @shelf.url %>"><%= @shelf.nil? ? '' : @shelf.name %></a>の本棚
+    <% else %>
+      <%= @shelf.nil? ? '' : @shelf.name %>の本棚
+    <% end %>
+  </h1>
+  <p class="description"><%= expand_tag(@shelf.description,@shelf.name) %><p>
+  </p>
+</div>
+
+<div id='menu_top'>
+  <%= render :partial => 'listmenu' %>
+</div>
+

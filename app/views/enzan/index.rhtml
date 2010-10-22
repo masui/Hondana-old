@@ -1,0 +1,251 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="/stylesheets/enzan.css" type="text/css">
+<title>本棚演算</title>
+<body>
+
+<h1>本棚演算 - 本棚.orgのデータを使ったデータマイニング</h1>
+
+ユーザが指定した演算式を使ってデータマイニングができます。
+<a href="enzan.swf">動画デモ</a>
+
+<!--
+<EMBED src="demo.swf" loop=true quality=high bgcolor=#aaaaff WIDTH="530" HEIGHT="340" NAME="demo" ALIGN=""
+TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer">
+</EMBED>
+-->
+
+
+<div style="float:left; width:45%;">
+  <h2>演算式作成</h2>
+  <div>
+    <div class='expression'>
+    > <span id="commandstr"></span>
+    </div>
+  </div>
+  <input type="button" id="clear" value="クリヤ">
+  <input type="button" id="delete" value="最後の演算を削除">
+  <input type="button" id="execute" value="演算実行">
+  <p>
+  下のボタンを使って「増井の本棚の本のリスト」のような演算式を生成してから
+<input type="button" id="execute2" value="演算実行">
+ボタンを押して下さい。右に結果が表示されます。
+  <!-- 「重なり」というのは演算実行結果の左側に表示される数字です。 -->
+
+  <!-- <h2>演算式生成</h2> -->
+  <div style="background-color:#ffdddd;">
+    <table id="buttons">
+    </table>
+  </div>
+
+  <h2>最近使われた演算式</h2>
+  <ul id="recent">
+  </ul>
+
+</div>
+
+<div style="float:right;width:50%;">
+  <h2>演算結果</h2>
+  <div id="result">
+  </div>
+</div>
+
+<script type="text/javascript">
+var commandstack = [];
+var commandstrstack = [];
+var commandstackind = 0;
+var recentcommands = [];
+
+function createXmlHttp(){
+  if (window.ActiveXObject) {
+    return new ActiveXObject("Microsoft.XMLHTTP");
+  } else if (window.XMLHttpRequest) {
+    return new XMLHttpRequest();
+  } else {
+    return null;
+  }
+}
+
+function execute(){
+  if(commandstackind == 0) return;
+  document.getElementById('result').innerHTML = '計算中... 少々お待ち下さい';
+  xmlhttp = createXmlHttp();
+  command = ""
+  for(i=0;i<commandstackind;i++){
+    command += commandstack[i];
+  }
+  commandstr = ""
+  for(i=0;i<commandstackind;i++){
+    commandstr += commandstrstack[i];
+  }
+
+  recentcommands.unshift(commandstr);
+  var e = document.getElementById('recent');
+  var s = '';
+  var max = recentcommands.length;
+  if(max > 10) max = 10;
+  for(var i=0;i<max;i++){
+    s += '<li>';
+    s += recentcommands[i];
+  }
+  e.innerHTML = s;
+
+//  file = "enzan.cgi?command=" + encodeURIComponent(command) + "&commandstr=" + encodeURIComponent(commandstr);
+  file = "/enzan/" + encodeURIComponent(command) + "&" + encodeURIComponent(commandstr);
+
+  xmlhttp.open("GET", file , true);
+  xmlhttp.onreadystatechange=function() {
+    if (xmlhttp.readyState==4) {
+      d = xmlhttp.responseText.split(/\n/);
+      s = "";
+      for(var i=0;i<d.length;i++){
+        s += d[i];
+        s += "<br>";
+      }
+      document.getElementById('result').innerHTML = s;
+    }
+  }
+  xmlhttp.send("");
+}
+
+var buttons = [
+  ['〜の本棚 ', '"#".shelves', 'name', 'top'],
+  ['「〜」にマッチする本 ', '"#".books', 'name', 'top'],
+  ['「〜」というデータ ', 'data("#")', 'filename', 'top'],
+  ['の本のリスト ', '.books'],
+  ['の本棚のリスト ', '.shelves'],
+  ['と類似する本棚〜個 ', '.similarshelves(#)', 'number'],
+  ['と類似する本〜冊 ', '.similarbooks(#)', 'number'],
+  ['のうち重みが〜以上のもの ', '.major(#)', 'number'],
+  ['と「〜」というデータの共通のもの ', '.intersection(data("#"))', 'filename'],
+  ['から「〜」というデータを除いたもの ', '.remove(data("#"))', 'filename'],
+  ['を「〜」というデータにセーブ。', '.save("#")', 'filename'],
+];
+
+function dispcommand(){
+  var i;
+  //command = ""
+  // for(i=0;i<commandstackind;i++){
+  //  command += commandstack[i];
+  //}
+  //document.getElementById('command').innerHTML = command;
+  commandstr = ""
+  for(i=0;i<commandstackind;i++){
+    commandstr += commandstrstack[i];
+  }
+  if(commandstr == ''){
+    commandstr = '(演算式入力エリア)'
+  }
+  document.getElementById('commandstr').innerHTML = commandstr;
+}
+
+function del(){
+  if(commandstackind > 0) commandstackind--;
+  dispcommand();
+}
+
+function clear(){
+  commandstackind = 0;
+  dispcommand();
+}
+
+function buttonpushed(event){
+  event.target.id.match(/button(.*)$/);
+  id = RegExp.$1
+  paramstr = document.getElementById('param'+id).value
+  s = buttons[id][1];
+  if(s.match(/#/)){
+    paramtype = buttons[id][2];
+    if(paramtype == 'number'){
+      if(! paramstr.match(/^[0-9]+$/)) return;
+    }
+    if(paramtype == 'filename'){
+      if(paramstr.match(/["\\]/)) return;
+    }
+    if(paramtype == 'name'){
+      if(paramstr.match(/["\\]/)) return;
+    }
+  }
+
+  if(buttons[id][3]){
+    if(commandstackind != 0) return;
+  }
+  else {
+    if(commandstackind == 0) return;
+  }
+
+  s = s.replace(/#/,paramstr);
+  commandstack[commandstackind] = s;
+  s = buttons[id][0];
+  s = s.replace(/〜/,paramstr);
+  commandstrstack[commandstackind] = s;
+  commandstackind++;
+  dispcommand();
+}
+
+function bookbutton(isbn,title){
+  // if(commandstackind != 0) return;
+  commandstackind = 0;
+  commandstack[commandstackind] = '"' + isbn + '".books';
+  commandstrstack[commandstackind] = '「' + title + '」という本';
+  commandstackind++;
+  dispcommand();
+}
+
+var i;
+table = document.getElementById('buttons');
+for(i=0;i<buttons.length;i++){
+  desc = buttons[i];
+  tr = document.createElement('tr');
+  td = document.createElement('td');
+  if(desc[1].match(/#/)){
+    e = document.createElement('input');
+    e.type = 'text';
+    e.style.width = '80pt';
+  }
+  else {
+    e = document.createElement('span');
+  }
+  e.id = 'param' + i;
+  td.appendChild(e);
+  tr.appendChild(td);
+  e = document.createElement('input');
+  e.type = 'button';
+  e.id = 'button' + i;
+  e.value = desc[0];
+  e.onmousedown = buttonpushed;
+  td = document.createElement('td');
+  td.appendChild(e);
+  tr.appendChild(td);
+  table.appendChild(tr);
+}
+document.getElementById('param0').value = "増井";
+document.getElementById('param1').value = "バカの壁";
+document.getElementById('param2').value = "test";
+document.getElementById('param5').value = "10";
+document.getElementById('param6').value = "10";
+document.getElementById('param7').value = "3";
+document.getElementById('param8').value = "test";
+document.getElementById('param9').value = "test";
+document.getElementById('param10').value = "test";
+
+
+button = document.getElementById("delete");
+button.onmousedown = del;
+button = document.getElementById("execute");
+button.onmousedown = execute;
+button = document.getElementById("execute2");
+button.onmousedown = execute;
+button = document.getElementById("clear");
+button.onmousedown = clear;
+
+dispcommand();
+
+</script>
+
+</body>
+</html>
+
+
+

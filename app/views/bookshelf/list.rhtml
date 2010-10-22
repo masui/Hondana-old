@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>本棚.org</title>
+    <link id="piclens" rel="alternate" type="application/rss+xml" title="新着本" href="/piclens.rss" />
+    <!-- stylesheet_link_tag "bookshelf.css" -->
+    <%= javascript_include_tag "cookiejump" %>
+<style type="text/css">
+<!--
+body  {
+	background-color: white;
+}
+h1     {
+	font-size: large;
+	font-weight: bold;
+	margin: 0;
+	padding: 0 0 0 2mm;
+}
+h2   { font-size: medium; font-weight: normal; margin: 0; padding: 0 }
+.description { font-size: small; padding-left: 4mm }
+#container  { margin: 0; padding: 0 }
+#home_header { background-image: url("/images/logo_top.jpg"); background-repeat: no-repeat; margin: 0; padding: 0; width: 100%; height: 64px }
+#hondana_org  { font-size: small; background-image: url("/images/bg_hondana_org.jpg"); background-repeat: no-repeat; margin: 0; padding: 0; width: 100% }
+#link_home { width: 110px; height: 48px; border-width: 0 }
+#edit { font-size: small; text-align: right; padding: 1mm 2mm 0 }
+#header      { margin: 0; padding: 2mm }
+#menu_top       { font-size: small; text-align: right; padding: 0 2mm }
+#book_volumes     { font-size: small; text-align: right; margin: 0; padding: 1mm 2mm 1mm 0 }
+#shelf_v  { background-repeat: repeat; margin: 0; padding: 0; width: 100% }
+#shelf       { font-size: small; background-image: url("/images/bg_shelf.jpg"); background-repeat: repeat; margin: 0; padding: 0; overflow: hidden }
+#shelf_imagelist { background-image: url("/images/bg_shelf_imagelist.jpg"); background-repeat: repeat; margin: 0; padding: 0 0 0 8px; width: 100% }
+.shelf_h   { background-image: url("/images/bg_shelf_h.jpg"); background-repeat: repeat; margin: 0; padding: 0; width: 100%; height: 10px; max-height: 10px }
+.list  { font-size: small; background-image: url("/images/bg_list.jpg"); background-repeat: repeat; margin: 8px; padding: 2mm }
+.book_image  { width: 80px; height: 120px; border-width: 0 }
+.book_noimage  { background-image: url("/images/bg_list.jpg"); margin: 0; padding: 0; width: 80px; height: 120px; overflow: hidden }
+.book_shade { background-image: url("/images/book_shade.jpg"); text-align: left; margin: 0; padding: 0; width: 88px; height: 120px }
+#shelf_shade  { background-image: url("/images/bg_shelf_shade.jpg"); background-repeat: repeat-x; margin: 0; padding: 0; height: 10px }
+#menu_bottom { font-size: small; text-align: right; padding: 0 2mm }
+#footer      { font-size: small; padding: 0 2mm; height: 20px; clear: both }
+.fms { }
+#list  { font-size: small; background-image: url("/images/bg_list.jpg"); background-repeat: repeat; margin: 8px; padding: 2mm }
+#book_noimage  { background-image: url("/images/bg_list.jpg"); margin: 0; padding: 0; width: 80px; height: 120px; overflow: hidden }
+#shelf_h { background-image: url("/images/bg_shelf_h.jpg"); background-repeat: repeat; margin: 0; padding: 0; width: 100%; height: 10px; max-height: 10px }
+-->
+</style>
+    <link rel="alternate" type="application/atom+xml" title="hondana.org" href="http://hondana.org/atom.xml">
+  </head>
+  <body leftmargin="0" marginheight="0" marginwidth="0" topmargin="0">
+    <div id="home_header">
+      <br/>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td align="right">
+          </td>
+          <td>
+            <form method="GET" action="http://www.amazon.co.jp/exec/obidos/external-search/">
+            　<input type="text" name="keyword" value="">
+              <input type="hidden" name="tag" value="bookshelf-1-22">
+              <input type="hidden" name="encoding-string-jp" value="日本語">
+              <input type=submit value="Amazonで検索">
+            </form>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div id="container">
+      <div id="shelf_v">
+        <div id="shelf">
+          <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+          <table width="100%" height="128" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td width="8"></td>
+              <% @newentries.each { |entry|  %>
+                <% @entry = entry %>
+                <td align="center" valign="bottom">
+                  <%= render :partial => 'shelf/imagetext_nodot' %>
+                </td>
+              <% } %>
+              <td width="8"></td>
+            </tr>
+          </table>
+          <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+          <div class="list">
+            <table width="100%">
+              <tr>
+                <td align="center">
+                  <%= start_form_tag :action => 'create' %>
+                    蔵書、気になる本、共有の本棚、何でもどうぞ。本棚の名前を入力して「作成」ボタンを押すと本棚ができます。
+                    <%= text_field_tag 'shelfname' %> の本棚を <%= submit_tag '作成' %>
+                  <%= end_form_tag %>
+                  <%= Shelf.count %>本棚　<%= Book.count %>冊　<%= link_to '更新順本棚一覧', :action => 'alllist' %>
+                  <hr noshade="noshade" size="1"/>
+		  <!--a href="listbyname.html">名前順本棚一覧</a>
+		  <a href="(EmptyReference!)">ランキング一覧</a>いろいろな角度から本棚を探せます。-->
+		</td>
+	      </tr>
+	    </table>
+	    <table width="100%">
+	      <tr>
+		<td valign="top" width="240">
+		  ヘルプは各本棚のメニューにあります。<br/><br/>
+		  <!--
+		  <a href="http://www.hondana.org/wiki/programs/search.cgi?title=%CB%DC%C3%AA.org">掲示板</a>で情報を共有しましょう！<br/>
+		  <br/>
+		  <a href="http://chizucho.org/">地図帳</a>でも書店の情報を共有しましょう！<br/>
+		  <br/>
+		  -->
+		  <hr noshade="noshade" size="1"/>
+		  <b>News</b><br/><br/>
+		  <!-- ********************************************************************************* -->
+		  2009/4/17 18:00
+		  <ul>
+		  <li><font color=red>破壊行為が観測されたため本棚削除機能を一時的に停止しています。自分の本棚が消えてしまったという方はご連絡下さい。</font>
+		  </ul>
+		  2008/11/25
+		  <ul>
+		  <li><a href="/enzan/">本棚演算</a>が復活しました
+		  </ul>
+		  2008/11/17
+		  <ul>
+		  <li>データベースをSQLite3からMySQLに変更しました
+		  </ul>
+		  2008/4/23
+		  <ul>
+		  <li>AmazonのAPI変更のため新規登録書籍の書誌情報が登録されない問題を修正しました
+		  </ul>
+		  2008/3/15
+                  <ul>
+                  <li>IE6でコメントが書けない問題を修正しました
+                  <li>IE6でトップページでエラーが出る問題を修正しました
+                  </ul>
+		  2008/3/5
+                  <ul>
+                  <li>13桁バーコード登録の問題を修正しました
+                  </ul>
+		  2008/2/25
+		  <br>
+		  <ul>
+		  <li>Railsに書き直して高速化しました。遅くて遅くてすみませんでした。
+		  <li>サーバがまだ安定しておらず時々止まってしまいます。申し訳ありません。
+		  <li>名前に漢字を含む本棚のURLが変わりました。ご注意下さい。
+		  <li>本棚のインクリメンタル検索が現在動きません。
+                  <li>書籍登録ブックマークレットがうまく動いていません。少々お待ち下さい。
+		  <li><a href="http://pitecan.com/Enzan2/">本棚演算</a>と連携してさらにパワーアップの予定です。
+		  <li>その他不具合があれば<a href="mailto:masui@pitecan.com">増井</a>にご連絡下さい。
+		  <li>ご興味のある方は<a href="mailto:hondana@quickml.com?cc=masui@pitecan.com&subject=ML参加&body=ML参加">メーリングリスト</a>に参加下さい。
+		  </ul>
+		  <br>
+		  TODO
+		  <br>
+		  <ul>
+		  <li>ページタイトル
+		  <li>非表示対応
+		  <li>1ページ表示モード
+		  <li>類似本の推薦
+		  <li>カテゴリ検索
+		  <li>本棚インクリメンタル検索
+		  <li>デフォルト本棚
+		  <li>API提供
+		  <li>本棚演算との連係
+  		  <li>本棚別RSS
+		  </ul>
+		  <br>
+		  <!-- ********************************************************************************* -->
+		</td>
+		<td width="5"></td>
+		<td width="1" bgcolor="#999999"></td>
+		<td width="5"></td>
+		<td valign="top">
+		  <%= start_form_tag :action => 'shelfsearch', :controller => 'bookshelf' %><h2>最近更新された本棚15 　　　　 本棚を探す  <%= text_field_tag 'q' %> <%= submit_tag '検索' %></h2><%= end_form_tag %>
+		    <div id='listdiv'>
+		      <table id='listtable'>
+		        <% for shelf in @dispshelves %>
+			<tr>
+			  <td width='150'>
+			    <%= link_to shelf.name, {:controller => 'shelf', :shelfname => shelf.name, :action => 'show'} %>
+			  </td>
+			  <td align='right'>
+			    (<%= shelf.countbook %>/<%= shelf.countbook_comm %>)冊
+			  </td>
+			  <td>
+			    <%
+			      # 何故かexpand_tag()をapplicatoin_helper.rbで定義しないとCGI版が動かない!
+			      desc = expand_tag(shelf.description,shelf.name)
+			      desc.gsub!(/\<\/?[^>]+\>/,'')
+			      desc.gsub!(/[\r\n]+/,'')
+			      if desc =~ /^.{30}/ then
+			        desc = "#{$&}..."
+			      end
+			    %>
+			    <%=h desc %>
+			  </td>
+			</tr>
+			<% end %>
+		      </table>
+		    </div>
+		    <br/>
+		  <hr noshade="noshade" size="1"/>
+		  <h2>こんな本棚もいかが？　ランダムに10</h2>
+		  <table>
+		    <% for shelf in @rand10 %>
+		      <tr>
+			<td width='150'>
+			  <%= link_to shelf.name, {:controller => 'shelf', :shelfname => shelf.name, :action => 'show'} %>
+			</td>
+			<td align='right'>
+			  (<%= shelf.countbook %>/<%= shelf.countbook_comm %>)冊
+			</td>
+			<td>
+			  <%=h shelf.description %>
+			</td>
+		      </tr>
+		    <% end %>
+		  </table>
+		</td>
+	      </tr>
+	    </table>
+	  </div>
+	  <div class="shelf_h"><img src="../images/fms.gif" class="fms"></div>
+	</div>
+      </div>
+      <div id="shelf_shade"></div>
+      <div id="footer">
+	Powered by <a href="http://www.pitecan.com">pitecan</a>
+      </div>
+    </div>
+  </body>
+
+  <!-- javascript_include_tag "shelfsearch" -->
+</html>

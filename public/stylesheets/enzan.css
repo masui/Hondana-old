@@ -1,0 +1,53 @@
+body {
+	background-color:#555;
+	color: white;
+}
+a {
+	color:#ffff88;
+}
+b {
+	color:#ffff88;
+}
+h1 {
+	color: #222;
+	/* background-color: #c0c0ff; */
+	background-image: url("/images/bg_hondana_org.jpg");
+	margin-right: 0%;
+	margin-left: 0%;
+	text-align: center;
+	padding: 0.2em 0.0em;
+	text-indent: 0.25em;
+	border-style: none;
+}
+h2 {
+   color:yellow;
+}
+/*
+h2 {
+	color: black;
+	background-color: #c0ffc0;
+	margin-right: 0%;
+	margin-left: 0%;
+	text-align: left;
+	padding: 0.1em 0.1em;
+	text-indent: 0.25em;
+	border-style: none;
+}
+*/
+pre {
+	padding: 0.3em 0.3em;
+	background-color:white;
+	color:black;
+}
+
+div.expression {
+       color:black;
+	background-color: #ffc0c0;
+	width: 100%;
+	margin-right: 0%;
+	margin-left: 0%;
+	text-align: left;
+	padding: 0.4em 0.4em;
+	text-indent: 0.25em;
+	border-style: none;
+}

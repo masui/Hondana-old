@@ -1,0 +1,37 @@
+<%= render :partial =>'header' %>
+
+<div id="shelf_v">
+  <div id="shelf">
+    <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+    <div class="list">
+      リストに追加する本のISBNかバーコードを入力してください。複数行入力できます。<br>
+      (例: 4004000149, 9784584186909)
+      <%= start_form_tag :shelfname => @shelf.name, :action => 'add' %>
+        <% if params[:error].to_s != '' then%>
+          <br/><font color='red'><%= params[:error] %></font><br/>
+        <% end %>
+        <!-- = text_area 'isbns', 'list', :wrap => 'virtual', :cols => 40, :rows => 10, :align => 'top', :value => @isbns.to_s %> -->
+        <%= text_area_tag 'isbns', @isbn.to_s, :wrap => 'virtual', :cols => 40, :rows => 10, :align => 'top' %>
+ 	<br/>
+        <%= submit_tag "書籍追加" %><br/>
+        <font>
+          ブックマークレットを使うとAmazonのページや他人の本棚から簡単に本を登録できます。
+          (<a href='http://d.hatena.ne.jp/keyword/%A5%D6%A5%C3%A5%AF%A5%DE%A1%BC%A5%AF%A5%EC%A5%C3%A5%C8'>ブックマークレットとは</a>)
+          <br/><br/>
+          たとえば、上の検索フォームを使ってAmazonで検索を行なった後、
+          お気に入りメニューからブックマークレットを呼び出すことにより
+          その本を自分の本棚に登録することができます。<br/>
+          詳しくは<%= link_to 'ヘルプ', :action => 'help' %>をご覧下さい。
+        </font>
+      <%= end_form_tag %>
+    </div>
+
+    <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+  </div>
+<div id="shelf_shade"></div>
+
+<div id='menu_bottom'>
+  <%= render :partial => 'listmenu' %>
+</div>
+
+<%= render :partial => 'shared/footer' %>

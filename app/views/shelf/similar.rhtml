@@ -1,0 +1,62 @@
+<!-- render :partial => 'header' -->
+
+<blockquote>
+類似本棚などの計算機能は今後用意しますが、
+とりあえず
+<a href="http://pitecan.com/Enzan2/">本棚演算のページ</a>をご利用下さい。
+</blockquote>
+
+<!--
+<div id="shelf_v">
+  <div id="shelf">
+    <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+    <div class="list">
+      <h2><!--= @shelf.name %>の本棚に似た本棚</h2>
+      <table>
+        <tr>
+          <th></th>
+          <th></th>
+          <th>共通書籍</th>
+          <th>類似度</th>
+          <th></th>
+        </tr>
+        <!-- booklist1 = BookList.new(@shelf.name) %>
+        <!-- @shelflist.each { |shelf| %>
+          <tr>
+            <!-- booklist2 = BookList.new(shelf.name) %>
+            <!-- isec = booklist1.intersection(booklist2) %>
+            <td><!--= link_to shelf.name, :shelfname=> shelf.name, :action => 'show' %></td>
+            <td>(<!--= shelf.countbook %>/<!--= shelf.countbook_comm %>)冊</td>
+            <td><!--= isec.length %></td>
+            <td><!--= booklist1.similarity(booklist2) %></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td colspan='5'>
+              <!-- isec.each { |isbn| %>
+                <!-- book = Book.find(:first, :conditions => ['isbn = ?', isbn]) %>
+                <!-- imageurl = book.imageurl %>
+                <!-- if imageurl.to_s != '' then %>
+                  <a href='<!--= url_for :shelfname => shelf.name, :isbn => isbn, :action => 'edit' %>'>
+                     <img class='book_image' src='<!--= imageurl %>'>
+                  </a>
+                <!-- end %>
+              <!-- } %>
+            </td>
+          </tr>
+        <!-- } %>
+      </table>
+    </div>
+    <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+  </div>
+<div id="shelf_shade"></div>
+
+<div id='menu_bottom'>
+  <!--= render_partial 'listmenu' %>
+</div>
+-->
+
+<!-- render_partial 'shared/footer' -->
+
+
+

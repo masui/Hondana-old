@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>本棚.org :<%= controller.action_name %></title>
+    <%= stylesheet_link_tag "bookshelf.css" %>
+    <link rel="alternate" type="application/atom+xml" title="hondana.org" href="http://hondana.org/atom.xml">
+  </head>
+  <body leftmargin="0" marginheight="0" marginwidth="0" topmargin="0">
+    <div id="home_header">
+      <br/>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td align="right">
+            <%= start_form_tag :action => 'bookshelf', :controller => 'search' %>
+            本を探す  <%= text_field_tag 'q' %> <%= submit_tag '本棚.orgで検索' %>
+            <%= end_form_tag %>
+          </td>
+          <td>
+            <form method="GET" action="http://www.amazon.co.jp/exec/obidos/external-search/">
+            　<input type="text" name="keyword" value="">
+              <input type="hidden" name="tag" value="bookshelf-1-22">
+              <input type="hidden" name="encoding-string-jp" value="日本語">
+              <input type=submit value="Amazonで検索">
+            </form>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div id="container">
+      <div id="shelf_v">
+        <div id="shelf">
+漢字漢字
+          <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+漢字漢字
+<!--
+          <table width="100%" height="128" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td width="8"></td>
+              <% @newentries.each { |entry|  %>
+                <% @entry = entry %>
+                <td align="center" valign="bottom">
+                  <%= render :partial => 'imagetext' %>
+                </td>
+              <% } %>
+              <td width="8"></td>
+            </tr>
+          </table>
+-->
+          <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+漢字漢字
+          <div class="list">
+            <table width="100%">
+              <tr>
+                <td align="center">
+漢字漢字
+                  <form id="FormName" action="http://www.hondana.org/programs/newuser.cgi" method="post" name="FormName">
+                  <!-- = start_form_tag :action => 'create' -->
+                    蔵書、気になる本、共有の本棚、何でもどうぞ。本棚の名前を入力して「作成」ボタンを押すと本棚ができます。
+                    <%= text_field 'shelf', 'name', 'size' => 16  %>
+                    の本棚を 
+                    <%= submit_tag '作成' %>
+                  <%= end_form_tag %>
+                  2642本棚　<a href="index_change.html">更新順本棚一覧</a>
+                  <hr noshade="noshade" size="1"/>
+										<!--a href="listbyname.html">名前順本棚一覧</a>
+										<a href="(EmptyReference!)">ランキング一覧</a>いろいろな角度から本棚を探せます。-->
+								</td>
+								</tr>
+							</table>
+							<table width="100%">
+								<tr>
+									<td valign="top" width="240">
+									ヘルプは各本棚のメニューにあります。<br/>
+									<br/>
+									<a href="http://www.hondana.org/wiki/programs/search.cgi?title=%CB%DC%C3%AA.org">掲示板</a>で情報を共有しましょう！<br/>
+									<br/>
+									<a href="http://pitecan.com/Mapmania/">地図帳</a>でも書店の情報を共有しましょう！<br/>
+									<br/>
+										<hr noshade="noshade" size="1"/>
+										<b>News</b><br/>
+									<br/>
+										2005/5/16
+<br>
+<a href="http://www.hondana.org/B5AAB0CBD4A2B2B0BDF1C5B9BDD0C8C7C9F4/">紀伊國屋書店出版部の本棚</a>で書評募集中！
+<br>
+<br>
+2005/4/25
+<br>
+「<a href="http://www.hondana.org/B4D8CFA2BDF1C0D2/">関連書籍の本棚</a>」を作りました。
+旧版-新版、関連する本などの登録にご利用下さい。
+(<a href="http://www.hondana.org/B4D8CFA2BDF1C0D2/0321197860.html">利用例</a>)
+<br>
+<br>
+2005/4/22
+<br>
+本棚の数が2000を越えました!
+<br>
+<br>
+<!--
+2005/4/17
+<br>
+<font color=red>
+またしても コメントを消失してしまいました!
+4/17 15:30時点のコメントに戻ってしまっています。
+本当に申し訳ございません。
+今度こそ原因を究明したと思いますので...
+</font>
+<br>
+<br>
+-->
+2005/4/17
+<br>
+他人の本棚の本を自分の本棚に登録するブックマークレットと
+Amazonの本を自分の本棚に登録するブックマークレットを共通にしました。
+ヘルプをご覧下さい。
+<br>
+<br>
+<!--
+2005/4/16
+<br>
+<font color=red>
+またもやトラブルでコメントデータを消失してしまいました。申し訳ありません...
+</font>
+<br>
+<br>
+2005/4/12
+<br>
+ハードディスクのトラブルにより深夜にデータを消失してしまったので朝のバックアップに戻しました。
+申し訳ありません。
+<br>
+-->
+
+
+									</td>
+									<td width="5"></td>
+									<td width="1" bgcolor="#999999"></td>
+									<td width="5"></td>
+									<td valign="top">
+									<h2>最近更新された本棚　20</h2>
+<table>
+<% for shelf in @top20 %>
+<tr>
+  <td width='150'>
+    <%= link_to shelf.name, {:shelfname => shelf.name, :action => 'show'} %>
+  </td>
+  <td align='right'>
+    (<%= shelf.countbook %>/<%= shelf.countbook_comm %>)冊
+  </td>
+  <td>
+    <%
+      desc = expand_tag(shelf.description.to_s,shelf.name)
+      desc.gsub!(/\<\/?[^>]+\>/,'')
+      desc.gsub!(/[\r\n]+/,'')
+      if desc =~ /^.{30}/ then
+        desc = "#{$&}..."
+      end
+    %>
+    <%=h desc %>
+  </td>
+</tr>
+<% end %>
+
+</table>
+		  <br/>
+		  <hr noshade="noshade" size="1"/>
+		  <h2>こんな本棚もいかが？　ランダムに10</h2>
+<table>
+<% for shelf in @rand10 %>
+<tr>
+  <td width='150'>
+    <%= link_to shelf.name, {:action => 'show', :id => shelf} %>
+  </td>
+  <td align='right'>
+    (<%= shelf.countbook %>/<%= shelf.countbook_comm %>)冊
+  </td>
+  <td>
+    <%=h shelf.description %>
+  </td>
+</tr>
+<% end %>
+
+</table>
+									</td>
+								</tr>
+							</table>
+					</div>
+				<div class="shelf_h"><img src="../images/fms.gif" class="fms"></div>
+
+			</div>
+			</div>
+			<div id="shelf_shade"></div>
+			<div id="footer">
+				Powered by <a href="http://www.pitecan.com">pitecan</a>
+			</div>
+		</div>
+    </body>
+</html>

@@ -1,0 +1,307 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>ユーザ認証</title>
+<script language="JavaScript" src="/javascripts/md5.js"></script>
+<script language="JavaScript" src="/javascripts/iqauth.js"></script>
+<script language="JavaScript" src="/javascripts/json.js"></script>
+<script type="text/javascript">
+var id = '<%= @id %>';
+var password;
+var newpassword;
+</script>
+<style type="text/css">
+<!--
+.input {
+  background-color:#ffffff;
+  margin:2;
+  padding:2;
+  border-width:1;
+  border-style:solid;
+  border-color:black;
+  vertical-align:middle;
+}
+.button {
+  background-color:#ffffff;
+  margin:2;
+  padding:3;
+  border-width:2;
+  border-style:outset;
+  border-color:black;
+  text-decoration:none;
+  color:black;
+  vertical-align:middle;
+}
+.floatbutton {
+  background-color:#ffffff;
+  margin:2;
+  padding:1;
+  border-width:2;
+  border-style:outset;
+  border-color:black;
+  text-decoration:none;
+  color:black;
+  vertical-align:middle;
+  width:20;
+  text-align:center;
+  float:left;
+}
+a:link {
+  color:#934C7B;
+}
+-->
+</style>
+</head>
+<body>
+<script type="text/javascript">
+
+  if (typeof window.XMLHttpRequest == "undefined") {
+    if(typeof window.ActiveXObject == "function") {
+      try {
+        new ActiveXObject("Msxml2.XMLHTTP");
+        window.XMLHttpRequest = function(){
+           return new ActiveXObject("Msxml2.XMLHTTP");
+        }
+      }
+      catch (e) {
+        try {
+          new ActiveXObject("Microsoft.XMLHTTP");
+          window.XMLHttpRequest = function(){
+            return new ActiveXObject("Microsoft.XMLHTTP");
+          }
+        }
+        catch (e) {
+          // 試行を断念する
+        }
+      }
+    }
+  }
+
+function clearBody(){
+  var c;
+  while(c = body.firstChild){
+    body.removeChild(c);
+  }
+}
+
+function wrongPassword(){
+  clearBody();
+  body.innerHTML = 'Wrong Password desu';
+}
+
+function challenge(q){
+  // なぞなぞを表示
+  // 解ければcreate()
+  document.title = 'ユーザ認証';
+  clearBody();
+
+//  var h1 = document.createElement('h1');
+//  h1.innerHTML = 'ユーザ認証';
+//  body.appendChild(h1);
+
+  var div;
+  div = document.createElement('div');
+  div.innerHTML = '以下の問題が現在登録されています。正しい答を選択して認証ボタンを押すと問題編集画面に移動します。';
+  body.appendChild(div);
+  body.appendChild(document.createElement('p'));
+
+  div = q.queryDiv();
+  body.appendChild(div);
+
+  var br = document.createElement('br');
+  br.clear = 'all';
+  body.appendChild(br);
+
+  body.appendChild(document.createElement('p'));
+  var submit = document.createElement('input');
+  submit.type = 'submit';
+  submit.value = '認証';
+  submit.iqauth = q;
+  body.appendChild(submit);
+
+  submit.onmousedown = function(event){
+    // 答をチェック
+    var element;
+    if(document.all){
+      event = window.event;
+      element = window.event.srcElement;
+    }
+    else element = event.target
+    password = element.iqauth.calcPassword(); // 旧パスワードを計算
+    if(element.iqauth.success()){
+      create(q);
+    }
+    else {
+      alert('ユーザ認証に失敗しました。');
+      challenge(q); // やり直し
+    }
+  }
+
+  q.queryDisplay();
+}
+
+function create(q){
+  // なぞなぞ編集画面を表示
+  // 登録ボタンを押すとconfirm()を呼ぶ
+  // そのときの選択からパスワードpassを生成
+
+  document.title = 'なぞなぞ問題編集';
+
+  var div;
+
+  clearBody();
+
+  var h1 = document.createElement('h1');
+  h1.innerHTML = 'なぞなぞ問題編集';
+  body.appendChild(h1);
+
+  div = document.createElement('div');
+  div.innerHTML = '写真のURLを指定し、なぞなぞ問題を用意して下さい。正しい答を選んでから実行ボタンを押すと確認画面に移動します。';
+  body.appendChild(div);
+  body.appendChild(document.createElement('p'));
+
+  body.appendChild(q.composeDiv());
+
+  body.appendChild(document.createElement('p'));
+
+  var submit = document.createElement('input');
+  submit.type = 'submit';
+  submit.value = '問題作成';
+  submit.iqauth = q;
+  document.body.appendChild(submit);
+  document.body.submit = submit;
+  document.body.submit.onmousedown = function(event){
+    var element;
+    if(document.all){
+      event = window.event;
+      element = window.event.srcElement;
+    }
+    else element = event.target;
+    newpassword = element.iqauth.calcPassword();
+    confirm(q);
+  }
+}
+
+function confirm(q){
+  // 作成したなぞなぞからクイズを表示
+  // 登録ボタンを押したら、passと比較
+  // 問題とパスワードをDBに登録
+  var div;
+  document.title = '問題/回答確認';
+
+  clearBody();
+  var h1 = document.createElement('h1');
+  h1.innerHTML = '問題/回答確認';
+  body.appendChild(h1);
+
+  div = document.createElement('div');
+  div.innerHTML = '作成した問題と回答を確認します。正しい答を選んで「確認」ボタンを押すと問題が登録されます。';
+  body.appendChild(div);
+  body.appendChild(document.createElement('p'));
+
+  q.answerInit();
+  var div = q.queryDiv();
+  body.appendChild(div);
+
+  body.appendChild(document.createElement('p'));
+  var submit = document.createElement('input');
+  submit.type = 'submit';
+  submit.value = '確認';
+  submit.iqauth = q;
+  body.appendChild(submit);
+
+  q.queryDisplay();
+
+  submit.onmousedown = function(event){
+    // 答をチェック
+    var element;
+    if(document.all){
+      event = window.event;
+      element = window.event.srcElement;
+    }
+    else element = event.target;
+    var iqauth = element.iqauth;
+    if(iqauth.calcPassword() != newpassword){
+      alert('認証に失敗しました。もう一度画像クイズを作成して下さい。');
+      create(q);
+    }
+    else {
+      // XmlHttpRequestで問題とパスワードを登録
+      // id, password, newpassword, queryを指定
+      var xmlhttp = new XMLHttpRequest();
+      //xmlhttp.overrideMimeType("text/xml; charset=utf-8"); // ?? よくわからない
+      //request = q.iqpath + "/programs/register.cgi?" +
+      //  "id=" + encodeURIComponent(iqauth.id) + '&' +
+      //  "password=" + escape(password) + '&' +
+      //  "newpassword=" + escape(newpassword) + '&' +
+      //  "query=" + encodeURIComponent(iqauth.data.toJSONString());
+      request = q.iqpath + "/iqauth/register/" + id + '?' +
+        "password=" + escape(password) + '&' +
+        "newpassword=" + escape(newpassword) + '&' +
+        "query=" + encodeURIComponent(iqauth.data.toJSONString());
+      xmlhttp.open("GET", request, true);
+      //xmlhttp.onreadystatechange = some function
+      xmlhttp.send(null);
+      // alert('新しいなぞなぞ問題を登録しました。');
+      complete();
+    }
+  }
+}
+
+function complete(){
+  var div;
+  document.title = '登録完了';
+
+  clearBody();
+  div = document.createElement('div');
+  div.innerHTML = '登録を完了しました。';
+  body.appendChild(div);
+}
+
+//
+// メイン
+//
+
+if (typeof window.XMLHttpRequest == "undefined") {
+  if(typeof window.ActiveXObject == "function") {
+    try {
+      new ActiveXObject("Msxml2.XMLHTTP");
+      window.XMLHttpRequest = function(){
+         return new ActiveXObject("Msxml2.XMLHTTP");
+      }
+    }
+    catch (e) {
+      try {
+        new ActiveXObject("Microsoft.XMLHTTP");
+        window.XMLHttpRequest = function(){
+          return new ActiveXObject("Microsoft.XMLHTTP");
+        }
+      }
+      catch (e) {
+        // 試行を断念する
+      }
+    }
+  }
+}
+
+var body = document.body;
+//var q = new IQAuth(id,"http://www.hondana.org/ImageAuth");
+var q = new IQAuth(id,"../..");
+if(q.passhash != '' && q.data.length > 0){ // 問題がすでに定義されている
+  challenge(q); // 現在の問題を解かせてパスワードと比較
+}
+else {
+  // サンプル問題を与えて問題作成
+  q.data = [
+    ["http://farm1.static.flickr.com/54/121077554_eb0138d019.jpg",
+      '大崎公園', '披露山公園', '源氏山公園', 'しおさい公園', '城ヶ島公園'],
+    ["http://farm1.static.flickr.com/48/107450833_2eb83a5e3b.jpg",
+      '真鶴', '逗子', '熱海', '下田', '伊東'],
+  ];
+  create(q); // なぞなぞ編集
+}
+
+</script>
+
+</body>
+</html>

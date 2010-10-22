@@ -1,0 +1,62 @@
+<table cellspacing='0' border='0' cellpadding='0' width='100%'>
+  <% @entrylist.each { |entry| %>
+    <% book = entry.book %>
+    <% @entry = entry %>
+    <tr>
+      <td width='8'></td>
+      <td valign='top' style='padding:8px;' width='88'>
+        <%= render :partial => 'imagetext' %>
+      </td>
+      <td valign='top'>
+        <div class='list'>
+          <table>
+            <tr>
+              <td valign='top' colspan='2'>
+                <%= link_to book.title, :isbn => book.isbn , :action => 'edit' %>
+              </td>
+            </tr>
+            <tr>
+              <td valign='top'>著者:</td>
+              <td><%= book.authors %></td>
+            </tr>
+            <tr>
+              <td valign='top'>出版社:</td>
+              <td><%= book.publisher %></td>
+            </tr>
+            <tr>
+              <td width='70'>評価:</td>
+              <td><%= entry.score %></td>
+            </tr>
+            <tr>
+              <td>カテゴリ:</td>
+              <td>
+               <% entry.categories.split(/,\s*/).each { |category| %>
+                 <%= link_to category, :action => 'category_detail', :category => category %>
+               <% } %>
+              </td>
+            </tr>
+            <tr>
+              <td valign='top'>コメント:</td>
+              <td><%= expand_tag(entry.comment.to_s,entry.shelf.name) %></td>
+            </tr>
+            <tr>
+              <td valign='top'>関連本棚:</td>
+              <td>
+                <% Entry.find(:all, :conditions => ["book_id = ?", book.id]).each { |entry| %>
+                  <% if entry.shelf.name !~ /_deleted/ %>
+                    <%= link_to entry.shelf.name, :shelfname => entry.shelf.name, :action => 'edit', :isbn => book.isbn %>
+                  <% end %>
+                <% } %>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan='3'>
+        <div class="shelf_h"><img src="../images/fms.gif" class="fms"></div>
+      </td>
+    </tr>
+   <% } %>
+</table>

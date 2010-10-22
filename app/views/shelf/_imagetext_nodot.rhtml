@@ -1,0 +1,19 @@
+<div class='book_shade' style='border-left:2px none #333333'>
+  <% book = @entry.book %>
+  <% shelf = @entry.shelf %>
+  <% isbn = book.isbn %>
+  <% shelfname = shelf.name %>
+  <% imageurl = book.imageurl %>
+  <% if imageurl.to_s == '' then %>
+    <div class='book_noimage'>
+      <a href='<%= url_for :controller => 'shelf', :shelfname => shelfname, :isbn => isbn, :action => 'edit' %>' style='text-decoration:none;'>
+        <%= book.title %>
+      </a>
+    </div>
+  <% else %>
+    <div class='book_shade' style='border-left:2px none #333333'>
+    <a href='<%= url_for :controller => 'shelf', :shelfname => shelfname, :isbn => isbn, :action => 'edit' %>'>
+       <img class='book_image' src='<%= imageurl %>'>
+    </a>
+  <% end %>
+</div>

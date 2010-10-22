@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss">
+<channel>
+  <title>新着書籍</title>
+  <link>http://hondana.org/</link>
+  <description>New entries on hondana.org</description>
+  <% @newentries.each { |entry| %>
+    <% book = entry.book %>
+    <% shelf = entry.shelf %>
+    <% isbn = book.isbn %>
+    <% shelfname = shelf.name %>
+    <% imageurl = book.imageurl %>
+    <item>
+      <title>Book</title>
+      <link><%= imageurl %></link>
+      <guid><%= isbn %></guid>
+      <media:thumbnail url="<%= imageurl %>" />
+      <media:content url="<%= imageurl %>" type="image/jpeg" />
+    </item>
+  <% } %>
+</channel>
+</rss>
+

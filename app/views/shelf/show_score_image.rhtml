@@ -1,0 +1,17 @@
+<%= render :partial => 'header' %>
+
+<div id='book_volumes'>
+  (<%= @shelf.countbook %>/<%= @shelf.countbook_comm %>)冊
+</div>
+<div id="shelf_v">
+  <div id="shelf">
+    <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+
+    <!-- @entrylist = Entry.find(:all, :order => "score DESC", :conditions => ["shelf_id = ?", @shelf.id]) 何故かこれが不要 -->
+    <%= render :partial => 'imagelist' %>
+
+  </div>
+</div>
+<div id="shelf_shade"></div>
+
+<%= render :partial => 'footer' %>

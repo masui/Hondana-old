@@ -1,0 +1,25 @@
+<%= render :partial => 'header' %>
+
+<div>
+  <h2>
+    <div id='header'>
+      <b><%= link_to @category, :shelf => @shelf.name, :action => 'category_detail', :category => @category %></b>
+    　<font size='-1'>
+      <%= link_to '書籍変更', :shelf => @shelf.name, :action => 'category_bookselect', :category => @category %> | 
+      <%= link_to 'カテゴリ名変更／削除', :shelf => @shelf.name, :action => 'category_rename', :category => @category %>
+      </font>
+    </div>
+  </h2>
+  <div id="shelf_v">
+    <div id="shelf">
+      <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+      <% @entrylist = Entry.find(:all, :order => "modtime DESC", :conditions => ["shelf_id = ? and categories like ?", @shelf.id, "%"+@category+"%"]) %>
+      <%= render :partial => 'textlist' %>
+    </div>
+  </div>
+  <div id='menu_bottom'>
+    <%= render :partial => 'listmenu' %>
+  </div>
+</div>
+
+<%= render :partial => 'shared/footer' %>

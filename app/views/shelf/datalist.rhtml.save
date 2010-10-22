@@ -1,0 +1,23 @@
+<%= render_partial 'header' %>
+
+<div id="shelf_v">
+  <div id="shelf">
+    <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+    <div class="list">
+      <h2>バックアップ</h2>
+      <pre>
+        <% @shelf.entries.each { |entry| ; book = entry.book %><hr noshade='noshade' size='1'/>isbn:	<%= book.isbn %>
+title:	<%= book.title %>
+date:	<%= entry.modtime %>
+publisher:	<%= book.publisher %>
+authors:	<%= book.authors %>
+categories:	<%= entry.categories %>
+score:	<%= entry.score %>
+comment:	<%= entry.comment %><% } %>
+      </pre>
+    </div>
+    <div class="shelf_h"><img src="../images/fms.gif" class="fms"></div>
+  </div>
+</div>
+
+<%= render_partial 'footer' %>

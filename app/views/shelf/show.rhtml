@@ -1,0 +1,14 @@
+<%= render :partial => 'header' %>
+
+<!-- 本リストメイン -->
+
+<div id="shelf_v">
+  <div id="shelf">
+    <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+    <% @entrylist = @shelf.entries %>
+    <%= render :partial => 'imagelist' %>
+  </div>
+</div>
+<div id="shelf_shade"></div>
+
+<%= render :partial => 'footer' %>

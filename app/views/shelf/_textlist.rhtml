@@ -1,0 +1,10 @@
+<div id="list">
+  <ul>
+    <% @entrylist.each { |entry| %>
+      <li>
+        <%= link_to entry.book.title, :isbn => entry.book.isbn , :action => 'edit' %>
+        <%= "(#{entry.book.authors} / #{entry.book.publisher})" %>
+      </li>
+    <% } %>
+  </ul>
+</div>

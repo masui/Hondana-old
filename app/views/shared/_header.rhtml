@@ -1,0 +1,28 @@
+<div id="hondana_org">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td align="left">
+        <a href='/'><%= image_tag ("/images/fms.gif", :alt => "hondana.org", :id => "link_home") %></a>
+      </td>
+      <td align="right">
+        <br/>
+        <% form_tag ({:controller => 'bookshelf', :action => 'search'}) do %>
+        本を探す  <%= text_field_tag 'q' %> <%= submit_tag '本棚.orgで検索' %>
+        <% end %>
+      </td>
+      <td>
+        <br/>
+        <form method="GET" action="http://www.amazon.co.jp/exec/obidos/external-search/">
+        　<input type="text" name="keyword" size="16" value="">
+          <input type="hidden" name="tag" value="bookshelf-1-22">
+          <input type="hidden" name="encoding-string-jp" value="日本語">
+          <input type=submit value="Amazonで検索">
+        </form>
+      </td>
+      <td valign="top">
+        <br/>
+        <a href="http://www.hondana.org/wiki/programs/search.cgi?title=%CB%DC%C3%AA.org">掲示板</a>
+      </td>
+    </tr>
+  </table>
+</div>

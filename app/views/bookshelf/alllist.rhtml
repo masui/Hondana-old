@@ -1,0 +1,41 @@
+<%= render :partial => 'shared/header' %>
+
+<div id="header">すべての本棚　<%= Shelf.count() %></div>
+
+<div id="shelf_v">
+  <div id="shelf">
+    <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+
+    <div class="list">
+      <table id='listtable'>
+        <% for shelf in @allshelves %>
+        <tr>
+          <td width='200'>
+            <%= link_to shelf.name, {:controller => 'shelf', :shelfname => shelf.name, :action => 'show'} %>
+          </td>
+          <td align='right'>
+            (<%= shelf.countbook %>/<%= shelf.countbook_comm %>)冊
+          </td>
+          <td>
+            <%
+              # 何故かexpand_tag()をapplicatoin_helper.rbで定義しないとCGI版が動かない!
+              desc = expand_tag(shelf.description,shelf.name)
+              desc.gsub!(/\<\/?[^>]+\>/,'')
+              desc.gsub!(/[\r\n]+/,'')
+              if desc =~ /^.{30}/ then
+                desc = "#{$&}..."
+              end
+            %>
+            <%=h desc %>
+          </td>
+        </tr>
+        <% end %>
+      </table>
+    </div>
+
+    <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+  </div>
+</div>
+<div id="shelf_shade"></div>
+
+<%= render :partial => 'shared/footer' %>

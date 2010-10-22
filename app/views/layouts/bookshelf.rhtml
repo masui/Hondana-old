@@ -1,0 +1,27 @@
+<% if @q.to_s != '' then %>
+  <html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>検索結果</title>
+    <%= stylesheet_link_tag 'bookshelf' %>
+  </head>
+  
+  <body topmargin='0' marginwidth='0' marginheight='0' leftmargin='0'>
+    <div id="container">
+<% elsif !@allshelves.nil? %>
+  <html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>全本棚リスト</title>
+    <%= stylesheet_link_tag 'bookshelf' %>
+  </head>
+  
+  <body topmargin='0' marginwidth='0' marginheight='0' leftmargin='0'>
+    <div id="container">
+<% end %>
+<%= @content_for_layout %>
+<% if @q.to_s != '' || !@allshelves.nil? then %>
+    </div>
+  </body>
+  </html>
+<% end %>
