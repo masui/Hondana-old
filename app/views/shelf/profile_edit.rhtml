@@ -2,11 +2,11 @@
 
 <div id="shelf_v">
   <div id="shelf">
-    <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+    <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
     <div class="list">
       <h2>本棚情報変更</h2>
       <p>
-      <%= start_form_tag :shelfname => @shelf.name, :action => 'profile_write' %>
+      <% form_tag({:shelfname => @shelf.name, :action => 'profile_write'}) do %>
         <table>
           <tr>
             <td valign='top'>本棚の説明</td>
@@ -38,9 +38,9 @@
         </table>
         <p>
         <%= submit_tag "　変更　" %>
-      <%= end_form_tag %>
+      <% end %>
     </div>
-    <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+    <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
   </div>
 <div id="shelf_shade"></div>
 

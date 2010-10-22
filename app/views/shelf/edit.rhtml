@@ -61,15 +61,14 @@ function reload(){
 <div id="shelf_v">
   <div id="shelf">
     <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
-    <!-- img src="/images/fms.gif" class="fms"></div> -->
     <div class="list">
-      <% form_tag({:shelfname => @shelf.name, :action => 'write', :isbn => @book.isbn},{ :method => :get}) do %>
+      <% form_tag({:shelfname => @shelf.name, :action => 'write', :isbn => @book.isbn}) do %>
         <table>
           <tr>
             <td rowspan="11" valign="top">
               <div Style="float:left; margin-right:30pt">
                 <a href="http://www.amazon.co.jp/exec/obidos/ASIN/<%= @book.isbn %>/<%= aid %>/ref=nosim/">
-                <img src='<%= @book.imageurl %>' alt='<%= @book.title %>' border="0">
+		<%= image_tag(@book.imageurl, :alt => @book.title, :border => 0) %>
                 </a>
               </div>
             </td>
@@ -189,7 +188,7 @@ function reload(){
         </tr>
         <tr>
           <td id="deleteform">
-            <% form_tag ({:action => 'delete', :isbn => @book.isbn}, {:method => :get}) do %>
+            <% form_tag ({:action => 'delete', :isbn => @book.isbn}) do %>
               <%= submit_tag "この本棚から削除" %>
             <% end %>
           </td>

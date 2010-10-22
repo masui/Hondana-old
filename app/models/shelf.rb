@@ -7,11 +7,11 @@ class Shelf < ActiveRecord::Base
 #  end
 
   def countbook
-    return Entry.count("shelf_id = #{id}")
+    return Entry.count(:conditions => ["shelf_id = #{id}"])
   end
 
   def countbook_comm
-    return Entry.count("LENGTH(comment) > 0 AND shelf_id = #{id}")
+    return Entry.count(:conditions => ["LENGTH(comment) > 0 AND shelf_id = #{id}"])
   end
 
 end

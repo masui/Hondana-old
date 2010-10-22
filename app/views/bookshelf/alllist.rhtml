@@ -4,8 +4,7 @@
 
 <div id="shelf_v">
   <div id="shelf">
-    <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
-
+    <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
     <div class="list">
       <table id='listtable'>
         <% for shelf in @allshelves %>
@@ -32,8 +31,7 @@
         <% end %>
       </table>
     </div>
-
-    <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+    <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
   </div>
 </div>
 <div id="shelf_shade"></div>

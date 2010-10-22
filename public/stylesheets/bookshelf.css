@@ -15,7 +15,8 @@ h2   { font-size: medium; font-weight: normal; margin: 0; padding: 0 }
 #link_home { width: 110px; height: 48px; border-width: 0 }
 #edit { font-size: small; text-align: right; padding: 1mm 2mm 0 }
 #header      { margin: 0; padding: 2mm }
-#menu_top       { font-size: small; text-align: right; padding: 0 2mm }
+#menu_top       { font-size: small; text-align: right; padding: 0 2mm; float: right; }
+#menu_bottom    { font-size: small; text-align: right; padding: 0 2mm; float: right; }
 #book_volumes     { font-size: small; text-align: right; margin: 0; padding: 1mm 2mm 1mm 0 }
 #shelf_v  { background-repeat: repeat; margin: 0; padding: 0; width: 100% }
 #shelf       { font-size: small; background-image: url("../images/bg_shelf.jpg"); background-repeat: repeat; margin: 0; padding: 0; overflow: hidden }
@@ -26,7 +27,6 @@ h2   { font-size: medium; font-weight: normal; margin: 0; padding: 0 }
 .book_noimage  { background-image: url("../images/bg_list.jpg"); margin: 0; padding: 0; width: 80px; height: 120px; overflow: hidden }
 .book_shade { background-image: url("../images/book_shade.jpg"); text-align: left; margin: 0; padding: 0; width: 88px; height: 120px }
 #shelf_shade  { background-image: url("../images/bg_shelf_shade.jpg"); background-repeat: repeat-x; margin: 0; padding: 0; height: 10px }
-#menu_bottom { font-size: small; text-align: right; padding: 0 2mm }
 #footer      { font-size: small; padding: 0 2mm; height: 20px; clear: both }
 .fms { }
 #list  { font-size: small; background-image: url("../images/bg_list.jpg"); background-repeat: repeat; margin: 8px; padding: 2mm }

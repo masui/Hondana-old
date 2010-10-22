@@ -60,54 +60,46 @@ class ShelfController < ApplicationController
     end
   end
 
-  # pagenateを使ってみたが、どういう原理なのかよくわからない。
-  # @entrylistを後で定義しても駄目みたいだし...
-
-  def show_recent_image
+  def show_recent(type, per_page)
     getshelf
-    @shelf.listtype = 'image'
+    @shelf.listtype = type
     @shelf.sorttype = 'recent'
     @shelf.save
-    # @entries_pages, @entrylist = paginate :entry, :per_page => 60, :conditions => ["shelf_id = ?", @shelf.id], :order_by => "modtime DESC"
+    @entrylist = Entry.paginate(:page => params[:page], :per_page => per_page,
+       :conditions => ["shelf_id = ?", @shelf.id], :order => "modtime DESC")
+  end
 
-    @entrylist = Entry.paginate(:page => params[:page], :per_page => 50, :conditions => ["shelf_id = ?", @shelf.id], :order => "modtime DESC")
+  def show_recent_image
+    show_recent('image',60)
   end
 
   def show_recent_text
-    getshelf
-    @shelf.listtype = 'text'
-    @shelf.sorttype = 'recent'
-    @shelf.save
-    @entries_pages, @entrylist = paginate :entry, :per_page => 400, :conditions => ["shelf_id = ?", @shelf.id], :order_by => "modtime DESC"
+    show_recent('text',200)
   end
+
   def show_recent_detail
+    show_recent('detail',20)
+  end
+
+  def show_score(type, per_page)
     getshelf
-    @shelf.listtype = 'detail'
-    @shelf.sorttype = 'recent'
+    @shelf.listtype = type
     @shelf.save
-    @entries_pages, @entrylist = paginate :entry, :per_page => 20, :conditions => ["shelf_id = ?", @shelf.id], :order_by => "modtime DESC"
+    @shelf.sorttype = 'score'
+    @entrylist = Entry.paginate(:page => params[:page], :per_page => per_page,
+      :conditions => ["shelf_id = ?", @shelf.id], :order => "score DESC")
   end
 
   def show_score_image
-    getshelf
-    @shelf.listtype = 'image'
-    @shelf.save
-    @shelf.sorttype = 'score'
-    @entries_pages, @entrylist = paginate :entry, :per_page => 60, :conditions => ["shelf_id = ?", @shelf.id], :order_by => "score DESC"
+    show_score('image',60)
   end
+
   def show_score_text
-    getshelf
-    @shelf.listtype = 'text'
-    @shelf.save
-    @shelf.sorttype = 'score'
-    @entries_pages, @entrylist = paginate :entry, :per_page => 400, :conditions => ["shelf_id = ?", @shelf.id], :order_by => "score DESC"
+    show_score('text',200)
   end
+
   def show_score_detail
-    getshelf
-    @shelf.listtype = 'detail'
-    @shelf.save
-    @shelf.sorttype = 'score'
-    @entries_pages, @entrylist = paginate :entry, :per_page => 20, :conditions => ["shelf_id = ?", @shelf.id], :order_by => "score DESC"
+    show_score('detail',20)
   end
 
   def edit
@@ -277,7 +269,7 @@ class ShelfController < ApplicationController
 #  newname = "takahiroyyy"
 # # return
 
-return # SPAM taisaku masui
+    #return # SPAM taisaku masui
     if newname == '' then
       @newname = @shelf.name + '_deleted000'
       while ! Shelf.find(:first, :conditions => ["name = ?", @newname]).nil? do
@@ -419,7 +411,7 @@ return # SPAM taisaku masui
   def realdelete
     getall
     # Should allow 'destroy' only when nazonaz-ninsho is available.!!! masui
-    # @entry.destroy # spam masui !!!!!!!!!!!!!!!
+    @entry.destroy # spam masui !!!!!!!!!!!!!!!
     redirect_to :shelfname => @shelf.name, :action => 'show'
   end
 

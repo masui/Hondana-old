@@ -6,10 +6,9 @@
 
 <div id="shelf_v">
   <div id="shelf">
-    <!-- <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div> -->
     <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
-    <!-- @entrylist = Entry.find(:all, :order => "modtime DESC", :conditions => ["shelf_id = ?", @shelf.id]) -->
     <%= render :partial => 'imagelist' %>
+    <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
   </div>
 </div>
 

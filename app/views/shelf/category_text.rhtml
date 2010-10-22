@@ -4,7 +4,7 @@
   <%=
     (0...@categories.length).collect { |i|
       category = @categories[i]
-      "<a href='##{i}' class='categoriestext'>#{category}</a>"
+      link_to category, "##{i}", :class => 'categoriestext'
     }.join(" | \n")
   %>
 </div>
@@ -14,7 +14,6 @@
     <h2>
       <div id='header'>
         <a name='<%= i %>'>
-        <!-- = link_to @categories[i], :shelf => @shelf.name, :action => 'category_detail', :category => @categories[i] %></b-->
         <b><%= link_to @categories[i], :action => 'category_detail', :category => @categories[i] %></b>
       　<font size='-1'>
         <%= link_to '書籍変更', :shelf => @shelf.name, :action => 'category_bookselect', :category => @categories[i] %> | 
@@ -24,13 +23,14 @@
     </h2>
     <div id="shelf_v">
       <div id="shelf">
-        <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+        <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
         <% @entrylist = Entry.find(:all, :conditions => ["shelf_id = ? and categories like ?", @shelf.id, "%"+@categories[i]+"%"]) %>
         <%= render :partial => 'textlist' %>
-        <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+        <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
       </div>
     </div>
     <div id='menu_bottom'>
+      <% @entrylist = nil %>
       <%= render :partial => 'listmenu' %>
     </div>
   <% } %>

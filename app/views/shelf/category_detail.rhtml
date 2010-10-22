@@ -13,12 +13,13 @@
   </h2>
   <div id="shelf_v">
     <div id="shelf">
-      <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+      <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
       <% @entrylist = Entry.find(:all, :order => "modtime DESC", :conditions => ["shelf_id = ? and categories like ?", @shelf.id, "%"+@category+"%"]) %>
       <%= render :partial => 'detaillist' %>
     </div>
   </div>
   <div id='menu_bottom'>
+    <% @entrylist = nil %>
     <%= render :partial => 'listmenu' %>
   </div>
 </div>

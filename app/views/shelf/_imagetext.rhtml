@@ -6,16 +6,14 @@
   <% imageurl = book.imageurl %>
   <% if imageurl.to_s == '' then %>
     <div class='book_noimage'>
-      <a href='<%= url_for :controller => 'shelf', :shelfname => shelfname, :isbn => isbn, :action => 'edit' %>' style='text-decoration:none;'>
-        <%= book.title %>
-      </a>
+      <%= link_to book.title, url_for(:controller => 'shelf', :shelfname => shelfname, :isbn => isbn, :action => 'edit'),
+        :style => 'text-decoration:none;' %>
     </div>
   <% else %>
     <% showdot = @entry.comment.to_s != '' ? 'dotted' : 'none' %>
     <div class='book_shade' style='border-left:2px <%= showdot %> #333333'>
-      <a href='<%= url_for :controller => 'shelf', :shelfname => shelfname, :isbn => isbn, :action => 'edit' %>'>
-       <img class='book_image' src='<%= imageurl %>' alt='<%= book.title %>'>
-      </a>
+      <%= link_to image_tag(imageurl, :class => "book_image", :alt => book.title),
+        :controller => 'shelf', :shelfname => shelfname, :isbn => isbn, :action => 'edit' %>
     </div>
   <% end %>
 </div>

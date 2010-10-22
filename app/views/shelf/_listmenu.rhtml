@@ -1,7 +1,12 @@
-<%= link_to "前頁<b>←</b>", { :page => @entries_pages.current.previous } if @entries_pages && @entries_pages.current.previous %>
-<%= link_to "<b>→</b>次頁", { :page => @entries_pages.current.next } if @entries_pages && @entries_pages.current.next %>
-<%= "|" if @entries_pages && (@entries_pages.current.previous || @entries_pages.current.next) %>
-
+<table  style='font-size:small;'>
+<tr>
+<td>
+<%= will_paginate @entrylist if @entrylist %>
+</td>
+<td>
+<%= "|" if @entrylist %>
+</td>
+<td>
 <%= link_to '更新順', :action => 'show_recent_detail' %> -
 <%= link_to '表紙', :action => 'show_recent_image' %> -
 <%= link_to '書名', :action => 'show_recent_text' %> |
@@ -11,3 +16,7 @@
 <%= link_to 'カテゴリ別', :action => 'category_image' %> -
 <%= link_to '書名', :action => 'category_text' %> |
 <%= link_to 'データリスト', :action => 'datalist' %>
+</td>
+</tr>
+</table>
+

@@ -2,11 +2,11 @@
 
 <div id="shelf_v">
   <div id="shelf">
-    <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+    <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
     <div class="list">
       リストに追加する本のISBNかバーコードを入力してください。複数行入力できます。<br>
       (例: 4004000149, 9784584186909)
-      <%= start_form_tag :shelfname => @shelf.name, :action => 'add' %>
+      <% form_tag({:shelfname => @shelf.name, :action => 'add'}) do %>
         <% if params[:error].to_s != '' then%>
           <br/><font color='red'><%= params[:error] %></font><br/>
         <% end %>
@@ -23,10 +23,10 @@
           その本を自分の本棚に登録することができます。<br/>
           詳しくは<%= link_to 'ヘルプ', :action => 'help' %>をご覧下さい。
         </font>
-      <%= end_form_tag %>
+      <% end %>
     </div>
 
-    <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+    <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
   </div>
 <div id="shelf_shade"></div>
 

@@ -2,7 +2,8 @@
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td align="left">
-        <a href='/'><%= image_tag ("/images/fms.gif", :alt => "hondana.org", :id => "link_home") %></a>
+        <!-- '/' だとサイトのトップに飛んでしまうのがマズい -->
+	<%= link_to image_tag("/images/fms.gif", :alt => "hondana.org", :id => "link_home"), url_for(:controller => 'bookshelf', :action => 'list') %>
       </td>
       <td align="right">
         <br/>
@@ -21,7 +22,7 @@
       </td>
       <td valign="top">
         <br/>
-        <a href="http://www.hondana.org/wiki/programs/search.cgi?title=%CB%DC%C3%AA.org">掲示板</a>
+	<%= link_to "本棚Wiki", "http://Gyazz.com/本棚/" %>
       </td>
     </tr>
   </table>

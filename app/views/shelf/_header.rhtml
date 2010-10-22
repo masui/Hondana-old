@@ -10,10 +10,11 @@
 
 <div id="header">
   <h1>
+    <% @name = @shelf.nil? ? '' : @shelf.name %>
     <% if @shelf.url.to_s != '' then %>
-      <a href="<%= @shelf.url %>"><%= @shelf.nil? ? '' : @shelf.name %></a>の本棚
+      <%= link_to @name, @shelf.url %>の本棚
     <% else %>
-      <%= @shelf.nil? ? '' : @shelf.name %>の本棚
+      <%= @name %>の本棚
     <% end %>
   </h1>
   <p class="description"><%= expand_tag(@shelf.description,@shelf.name) %><p>
@@ -23,4 +24,5 @@
 <div id='menu_top'>
   <%= render :partial => 'listmenu' %>
 </div>
+<br clear='all'>
 

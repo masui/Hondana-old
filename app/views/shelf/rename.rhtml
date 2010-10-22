@@ -2,11 +2,11 @@
 
 <div id="shelf_v">
   <div id="shelf">
-    <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+    <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
     <div class="list">
       <h2>「<%= @shelf.name %>の本棚」の名前変更</h2>
       <br/>
-      <%= start_form_tag :shelfname => @shelf.name, :action => 'setname' %>
+      <% form_tag({:shelfname => @shelf.name, :action => 'setname'}) do %>
         <!---
         errors を使うべきなのだと思うが使い方がわからん。 
         < @shelf.errors.add_to_base(params[:error]) if params[:error].to_s != '' %>
@@ -18,9 +18,9 @@
         新しい本棚名を入力してボタンを押してください。<br/>
         空白のまま書き込むと「<%= @shelf.name %>の本棚」が消去されます。<br/><br/>
         <%= text_field 'shelf', 'name', :size => 30 %><%= submit_tag "本棚名変更/消去" %>
-      <%= end_form_tag %>
+      <% end %>
     </div>
-    <div class="shelf_h"><img src="/images/fms.gif" class="fms"></div>
+    <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
   </div>
 <div id="shelf_shade"></div>
 
