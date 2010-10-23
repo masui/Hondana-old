@@ -1,0 +1,50 @@
+require 'rubygems'
+require 'active_record'
+
+ActiveRecord::Base.establish_connection(
+  :adapter => 'mysql',
+  :host => 'localhost',
+  :username => 'root',
+  :password => '',
+  :database => 'hondana',
+  :encoding => 'utf8'
+)
+
+class Book < ActiveRecord::Base
+  has_many :entries
+  has_many :shelves, :through => :entries
+end
+
+class Shelf < ActiveRecord::Base
+  has_many :entries
+  has_many :books, :through => :entries
+end
+
+class Entry < ActiveRecord::Base
+  belongs_to :book
+  belongs_to :shelf
+end
+
+
+bookshash = {}
+count = 1
+
+books = Book.find(:all)
+books.each { |book|
+  data = {}
+  if book.title.to_s != '' then
+#    puts book.title
+    #puts book.authors
+    data['title'] = book.title
+    data['authors'] = book.authors
+    data['publisher'] = book.publisher
+    bookshash[book.isbn] = data
+    count += 1
+    STDERR.puts "#{count} books processed ..." if count % 10000 == 0
+  end
+}
+
+STDERR.puts "Writing to marshal.bookinfo ..."
+File.open("marshal.bookinfo","w"){ |f|
+  f.print Marshal.dump(bookshash)
+}
