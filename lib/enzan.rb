@@ -390,20 +390,3 @@ if __FILE__ == $0
   Enzan.new('http://masui.sfc.keio.ac.jp/hondana2','/Users/masui/hondana2')
   puts "増井".shelves.similarshelves.similarbooks.out
 end
-
-#if __FILE__ == $0
-#  require 'test/unit'
-#
-#  class TestEnzan < Test::Unit::TestCase
-#    def setup
-#      @enzan = Enzan.new
-#    end
-#    # def teardown
-#    # end
-#
-#    def test_foo
-#      assert(!@enzan.nil?)
-#    end
-#  end
-#end
-
