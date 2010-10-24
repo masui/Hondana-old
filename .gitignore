@@ -1,1 +1,6 @@
 *~
+enzan/marshal.*
+log/
+*.save
+*.save/
+public/atom.xml

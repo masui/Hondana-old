@@ -26,13 +26,15 @@ class Enzan
   @@initialized = false
 
   def initialize(rooturl="http://hondana.org", rootdir="/Users/masui/hondana2")
+    # #{rootdir}/enzan の下にmarshal.bookinfoとmarshal.shelfbooksというMarshalファイルがある
+    # その下の data/ に保存データを置く
     @@rooturl = rooturl
     @@rootdir = rootdir
     if !@@initialized then
       @@initialized = true
       File.open("#{rootdir}/enzan/marshal.bookinfo"){ |f|
         @@bookinfo = Marshal.load(f)
-        # @@bookinfo['0123456789'] = { title:'タイトル', authors:'著者' }
+        # @@bookinfo['0123456789'] = { title:'タイトル', authors:'著者', isbn:'1234567890' }
       }
       File.open("#{rootdir}/enzan/marshal.shelfbooks"){ |f|
         @@shelf_books = Marshal.load(f)
