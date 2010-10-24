@@ -1,7 +1,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="stylesheet" href="/stylesheets/enzan.css" type="text/css">
+<%= stylesheet_link_tag 'enzan' %>
+
 <title>本棚演算</title>
 <body>
 
@@ -9,13 +10,6 @@
 
 ユーザが指定した演算式を使ってデータマイニングができます。
 <a href="enzan.swf">動画デモ</a>
-
-<!--
-<EMBED src="demo.swf" loop=true quality=high bgcolor=#aaaaff WIDTH="530" HEIGHT="340" NAME="demo" ALIGN=""
-TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer">
-</EMBED>
--->
-
 
 <div style="float:left; width:45%;">
   <h2>演算式作成</h2>
@@ -52,6 +46,7 @@ TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/g
 </div>
 
 <script type="text/javascript">
+var cururl = '<%= url_for() %>';
 var commandstack = [];
 var commandstrstack = [];
 var commandstackind = 0;
@@ -92,7 +87,8 @@ function execute(){
   e.innerHTML = s;
 
 //  file = "enzan.cgi?command=" + encodeURIComponent(command) + "&commandstr=" + encodeURIComponent(commandstr);
-  file = "/enzan/" + encodeURIComponent(command) + "&" + encodeURIComponent(commandstr);
+//  file = "/hondana2/enzan/" + encodeURIComponent(command) + "&" + encodeURIComponent(commandstr);
+  file = cururl + "/cmd?cmd=" + encodeURIComponent(command); // "/hondana2/enzan", etc.
 
   xmlhttp.open("GET", file , true);
   xmlhttp.onreadystatechange=function() {
@@ -246,6 +242,4 @@ dispcommand();
 
 </body>
 </html>
-
-
 

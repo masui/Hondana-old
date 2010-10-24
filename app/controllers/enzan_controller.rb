@@ -2,34 +2,20 @@ class EnzanController < ApplicationController
 
   require 'enzan'
 
-  @@enzan = Enzan.new
+  #   @@enzan = Enzan.new(url_for())
+
+  #Enzan.new('http://masui.sfc.keio.ac.jp/hondana2','/Users/masui/hondana2')
+  #Enzan.new('http://masui.sfc.keio.ac.jp/hondana2','.')
+
+  # Enzan.new('http://masui.sfc.keio.ac.jp/hondana2',RAILS_ROOT)
+
+  Enzan.new(relative_url_root,RAILS_ROOT) # これでいいのかよくわからないが...
 
   def index
-#    @bookinfo = {}
-#    File.open("/home/masui/hondana2/enzan/marshal.bookinfo"){ |f|
-#      @bookinfo = Marshal.load(f)
-#    }
   end
 
   def calculate
-    # @enzan = Enzan.new
     (cmd,str) = params[:cmd].split(/&/)
-
-#    File.delete("/home/masui/hondana2/enzan/tmp.html")
-#    File.rename("/home/masui/hondana2/enzan/recent.html","/home/masui/hondana2/enzan/tmp.html")
-#    File.open("/home/masui/hondana2/enzan/recent.html","w"){ |f|
-#      f.puts "<li>#{str}"
-#      File.open("/home/masui/hondana2/enzan/tmp.html"){ |old|
-#        old.each { |line|
-#          f.print line
-#          break if $. > 9
-#        }
-#      }
-#    }
-
     @res = eval(cmd).out # .split(/[\r\n]/).join("\t")
-
-    #@res = cmd
   end
-
 end

@@ -11,7 +11,8 @@ ActionController::Routing::Routes.draw do |map|
   # map.connect '', :controller => "welcome"
 
   # map.connect '', :controller => 'shelf', :action => 'list'
-  map.connect '', :controller => 'bookshelf', :action => 'list'
+  # map.connect '', :controller => 'bookshelf', :action => 'list'
+  map.root :controller => 'bookshelf', :action => 'list'
 
   map.connect 'piclens.rss', :controller => 'bookshelf', :action => 'piclens'
 
@@ -43,25 +44,33 @@ ActionController::Routing::Routes.draw do |map|
               :controller => 'enzan',
               :action => 'recent'
  
-  map.connect 'enzan/:cmd',
+  map.connect 'enzan/cmd',
                :controller => 'enzan',
                :action => 'calculate'
 
-  map.connect 'iqauth/create/:id',
-              :controller => 'iqauth',
-              :action => 'create'
+  #
+  # /iqauth/... ã¨ã„ã†URLã¯actionã¨ã¿ãªã™ã“ã¨ã«ã™ã‚‹
+  # /iqauth/create, etc.
+  #
+  map.connect 'iqauth/:action/:id',
+              :controller => 'iqauth'
 
-  map.connect 'iqauth/register/:id',
-              :controller => 'iqauth',
-              :action => 'register'
-
-  map.connect 'iqauth/getdata/:id',
-              :controller => 'iqauth',
-              :action => 'getdata'
+#  map.connect 'iqauth/create/:id',
+#              :controller => 'iqauth',
+#              :action => 'create'
+#
+#  map.connect 'iqauth/register/:id',
+#              :controller => 'iqauth',
+#              :action => 'register'
+#
+#  map.connect 'iqauth/getdata/:id',
+#              :controller => 'iqauth',
+#              :action => 'getdata'
 
   #
-  # /bookshelf/... ¤È¤¤¤¦URL¤Ïaction¤È¤ß¤Ê¤¹¤³¤È¤Ë¤¹¤ë
+  # /bookshelf/... ã¨ã„ã†URLã¯actionã¨ã¿ãªã™ã“ã¨ã«ã™ã‚‹
   # /bookshelf/search, /bookshelf/alllist, etc.
+  # APIã«ä½¿ãˆã‚‹?
   #
   map.connect 'bookshelf/:action',
               :controller => 'bookshelf'
@@ -96,7 +105,7 @@ ActionController::Routing::Routes.draw do |map|
 	      :requirements => {}
 #              :requirements => { :action => /^(datalist|help|edit|write|newbooks|add|delete|rename|setname|similar|show.*|category_.*|profile_.*|search|cookieset|cookiereset)/ }
 #              :requirements => { :action => /^(datalist|help|edit|write|newbooks|add|delete|rename|setname|show|show_.*|category_.*|profile_.*)/ }
-#              ¤È¤¹¤ë¤È¤ª¤«¤·¤Ê¤³¤È¤Ë¤Ê¤Ã¤¿¤Î¤À¤¬...
+#              ã¨ã™ã‚‹ã¨ãŠã‹ã—ãªã“ã¨ã«ãªã£ãŸã®ã ãŒ...
 
 
 #  map.connect ':shelfname/:any',

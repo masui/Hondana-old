@@ -11,7 +11,7 @@ b {
 h1 {
 	color: #222;
 	/* background-color: #c0c0ff; */
-	background-image: url("/images/bg_hondana_org.jpg");
+	background-image: url("../images/bg_hondana_org.jpg");
 	margin-right: 0%;
 	margin-left: 0%;
 	text-align: center;

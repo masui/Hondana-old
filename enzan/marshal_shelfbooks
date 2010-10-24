@@ -33,15 +33,13 @@ shelfnames = shelves.collect { |shelf|
   shelf.name
 }
 
-ActiveRecord::Base.remove_connection
+#ActiveRecord::Base.remove_connection
 
-count = 0
 shelfnames.each { |shelfname|
   next if shelfname =~ /deleted/
-  STDERR.puts "#{count} #{shelfname}"
-  count += 1
+  STDERR.puts "#{shelfbooks.count} #{shelfname}"
   isbns = []
-  ActiveRecord::Base.establish_connection(connection)
+#  ActiveRecord::Base.establish_connection(connection)
 
   shelf = Shelf.find(:first, :conditions => ["name = ?", shelfname])
 
@@ -50,11 +48,12 @@ shelfnames.each { |shelfname|
       book.isbn
     }
 #  puts "shelfbooks['#{shelf.name}'] =['" + data.join("', '") + "']"
+    # shelfbooks['増井'] =['1234567890', '2345678901', ...]
 
     shelfbooks[shelfname] = isbns
   end
 
-  ActiveRecord::Base.remove_connection
+#  ActiveRecord::Base.remove_connection
 }
 
 STDERR.puts "Dumping info ..."
