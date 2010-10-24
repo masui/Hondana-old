@@ -23,38 +23,54 @@ class Enzan
   @@book_shelves = nil
   @@books = nil
   @@shelves = nil
+  @@initialized = false
 
-  def initialize
-    File.open("/home/masui/hondana2/enzan/marshal.bookinfo"){ |f|
-      @@bookinfo = Marshal.load(f)
-    }
-    File.open("/home/masui/hondana2/enzan/marshal.shelfbooks"){ |f|
-      @@shelf_books = Marshal.load(f)
-    }
-    # データ不整合チェック - 本来必要ないはずなのだが。
-    @@shelf_books.each { |shelf,books|
-      delbooks = []
-      books.each { |book|
-        if @@bookinfo[book].nil? then
-          delbooks << book
-        end
+  def initialize(rooturl="http://hondana.org", rootdir="/Users/masui/hondana2")
+    @@rooturl = rooturl
+    @@rootdir = rootdir
+    if !@@initialized then
+      @@initialized = true
+      File.open("#{rootdir}/enzan/marshal.bookinfo"){ |f|
+        @@bookinfo = Marshal.load(f)
+        # @@bookinfo['0123456789'] = { title:'タイトル', authors:'著者' }
       }
-      delbooks.each { |book|
-        books.delete(book)
+      File.open("#{rootdir}/enzan/marshal.shelfbooks"){ |f|
+        @@shelf_books = Marshal.load(f)
+	# @@shelf_books['増井'] = ['0123456789', '1234567890', ...]
       }
-    }
+      # データ不整合チェック - 本来必要ないはずなのだが。
+      @@shelf_books.each { |shelf,books|
+        delbooks = []
+        books.each { |book|
+          if @@bookinfo[book].nil? then
+            delbooks << book
+          end
+        }
+        delbooks.each { |book|
+          books.delete(book)
+        }
+      }
     
-    # 本に対応する本棚リスト作成
-    @@book_shelves = {}
-    @@shelf_books.each { |shelf,books|
-      books.each { |book|
-        @@book_shelves[book] = [] if @@book_shelves[book] == nil
-        @@book_shelves[book].push(shelf)
+      # 本に対応する本棚リスト作成
+      @@book_shelves = {}
+      @@shelf_books.each { |shelf,books|
+        books.each { |book|
+          @@book_shelves[book] = [] if @@book_shelves[book] == nil
+          @@book_shelves[book].push(shelf)
+        }
       }
-    }
     
-    @@books = @@book_shelves.keys
-    @@shelves = @@shelf_books.keys
+      @@books = @@book_shelves.keys
+      @@shelves = @@shelf_books.keys
+    end
+  end
+
+  def Enzan.rootdir
+    @@rootdir
+  end
+
+  def Enzan.rooturl
+    @@rooturl
   end
 
   def Enzan.bookinfo(isbn=nil)
@@ -150,7 +166,7 @@ class EnzanData
   
   def save(name)
     hash = Digest::MD5.new.hexdigest(name).to_s
-    File.open("/home/masui/hondana2/enzan/data/#{hash}","w"){ |f|
+    File.open("#{rootdir}/enzan/data/#{hash}","w"){ |f|
       f.print Marshal.dump(self)
     }
     self
@@ -164,9 +180,9 @@ class EnzanData
     self
   end
   
-  def similar(n)
-    Data.new
-  end
+#  def similar(n)
+#    Data.new
+#  end
   
   def similarshelves(n)
     similar(n)
@@ -254,7 +270,7 @@ class Shelves < EnzanData
 
   def out(n=20)
     list[0...n].collect { |shelf|
-      "#{@data[shelf]} <a href='http://hondana.org/#{shelf}/'>#{shelf}</a> (#{Enzan.books(shelf).length}冊)"
+      "#{@data[shelf]} <a href='#{Enzan.rooturl}/#{shelf}/'>#{shelf}</a> (#{Enzan.books(shelf).length}冊)"
     }.join("\n")
   end
 end
@@ -327,13 +343,13 @@ class Books < EnzanData
     list[0...n].collect { |isbn|
       shelf = Enzan.shelves(isbn)[0]
       title = Enzan.bookinfo(isbn)['title']
-      "#{@data[isbn]} <a href='http://hondana.org/#{shelf}/#{isbn}.html'>#{isbn}</a> <span onmousedown='bookbutton(\"#{isbn}\",\"#{title}\")'>#{title}</span> (#{Enzan.bookinfo(isbn)['authors']})"
+      "#{@data[isbn]} <a href='#{Enzan.rooturl}/#{shelf}/#{isbn}.html'>#{isbn}</a> <span onmousedown='bookbutton(\"#{isbn}\",\"#{title}\")'>#{title}</span> (#{Enzan.bookinfo(isbn)['authors']})"
     }.join("\n")
   end
 
   def save(name)
     hash = Digest::MD5.new.hexdigest(name).to_s
-    File.open("/home/masui/hondana2/enzan/data/#{hash}","w"){ |f|
+    File.open("#{rootdir}/enzan/data/#{hash}","w"){ |f|
       f.print Marshal.dump(self)
     }
     self
@@ -341,17 +357,12 @@ class Books < EnzanData
 end
 
 class String
-  require 'kconv'
   def books
     Books.new(self)
   end
 
   def shelves
     Shelves.new(self)
-  end
-
-  def toeuc
-    Kconv.toeuc(self)
   end
 end
 
@@ -365,14 +376,34 @@ class Array
   end
 end
 
-def data(name)
-  hash = Digest::MD5.new.hexdigest(name).to_s
-  file = "/home/masui/hondana2/enzan/data/#{hash}"
-  if File.exist?(file) then
-    Marshal.load(File.open("/home/masui/hondana2/enzan/data/#{hash}"))
-  else
-    EnzanData.new
-  end
+#def data(name)
+#  hash = Digest::MD5.new.hexdigest(name).to_s
+#  file = "#{rootdir}/enzan/data/#{hash}"
+#  if File.exist?(file) then
+#    Marshal.load(File.open("#{rootdir}/enzan/data/#{hash}"))
+#  else
+#    EnzanData.new
+#  end
+#end
+
+if __FILE__ == $0
+  Enzan.new('http://masui.sfc.keio.ac.jp/hondana2','/Users/masui/hondana2')
+  puts "増井".shelves.similarshelves.similarbooks.out
 end
 
-Enzan.new
+#if __FILE__ == $0
+#  require 'test/unit'
+#
+#  class TestEnzan < Test::Unit::TestCase
+#    def setup
+#      @enzan = Enzan.new
+#    end
+#    # def teardown
+#    # end
+#
+#    def test_foo
+#      assert(!@enzan.nil?)
+#    end
+#  end
+#end
+
