@@ -26,25 +26,18 @@ class Entry < ActiveRecord::Base
 end
 
 
-bookshash = {}
-count = 1
-
+hash = {}
 books = Book.find(:all)
 books.each { |book|
   data = {}
   if book.title.to_s != '' then
-#    puts book.title
-    #puts book.authors
     data['title'] = book.title
     data['authors'] = book.authors
     data['publisher'] = book.publisher
-    bookshash[book.isbn] = data
-    count += 1
-    STDERR.puts "#{count} books processed ..." if count % 10000 == 0
+    hash[book.isbn] = data
+    STDERR.puts "#{hash.count} books processed ..." if hash.count > 0 && hash.count % 10000 == 0
   end
 }
 
-STDERR.puts "Writing to marshal.bookinfo ..."
-File.open("marshal.bookinfo","w"){ |f|
-  f.print Marshal.dump(bookshash)
-}
+STDERR.puts "Dumping info ..."
+print Marshal.dump(hash)

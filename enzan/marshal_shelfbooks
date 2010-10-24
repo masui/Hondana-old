@@ -45,12 +45,6 @@ shelfnames.each { |shelfname|
 
   shelf = Shelf.find(:first, :conditions => ["name = ?", shelfname])
 
-#  books = shelf.books
-#  books.each { |book|
-#    isbns << book.isbn
-#  }
-# 
-
   if shelf then
     isbns = shelf.books.collect { |book|
       book.isbn
@@ -63,7 +57,5 @@ shelfnames.each { |shelfname|
   ActiveRecord::Base.remove_connection
 }
 
-STDERR.puts "Writing to marshal.shelfbooks ..."
-File.open("marshal.shelfbooks","w"){ |f|
-  f.print Marshal.dump(shelfbooks)
-}
+STDERR.puts "Dumping info ..."
+print Marshal.dump(shelfbooks)
