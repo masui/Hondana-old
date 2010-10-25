@@ -9,7 +9,7 @@ class EnzanController < ApplicationController
 
   # Enzan.new('http://masui.sfc.keio.ac.jp/hondana2',RAILS_ROOT)
 
-  Enzan.new(relative_url_root,RAILS_ROOT) # これでいいのかよくわからないが...
+  Enzan.new(relative_url_root,RAILS_ROOT) # これで良いのかよくわからないが...
 
   def index
   end

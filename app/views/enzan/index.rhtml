@@ -21,12 +21,16 @@
     </div>
   </div>
   <!-- input type="button" id="clear" value="クリヤ"-->
-  <input type="button" id="execute" value="実行">
+  <!-- input type="button" id="execute" value="実行"-->
+  <p>
   <input type="button" id="delete" value="削除">
   <p>
+<!--
   下のボタンを使って「増井の本棚の本のリスト」のような演算式を生成してから
 <input type="button" id="execute2" value="実行">
 ボタンを押して下さい。右に結果が表示されます。
+-->
+  下のボタンを使って「増井の本棚の本のリスト」のような演算式を生成して下さい。右に結果が表示されます。
 <br>
 「重み」というのは演算実行結果の左側に表示される数字です。
 
@@ -66,7 +70,10 @@ function createXmlHttp(){
 }
 
 function execute(){
-  if(commandstackind == 0) return;
+  if(commandstackind == 0){
+    document.getElementById('result').innerHTML = '';
+    return;
+  }
   document.getElementById('result').innerHTML = '計算中... 少々お待ち下さい';
   xmlhttp = createXmlHttp();
   command = ""
@@ -142,6 +149,8 @@ function dispcommand(){
 function del(){
   if(commandstackind > 0) commandstackind--;
   dispcommand();
+
+  execute();
 }
 
 function clear(){
@@ -184,6 +193,8 @@ function buttonpushed(event){
   commandstrstack[commandstackind] = s;
   commandstackind++;
   dispcommand();
+
+  execute(); // いきなり実行してしまう
 }
 
 function bookbutton(isbn,title){
@@ -236,8 +247,8 @@ keywords = [
   '有川浩',
   '電子書籍',
   'けいおん',
-  '水木しげる',
-  '舞城王太郎',
+  '水木 しげる',
+  '舞城 王太郎',
 ];
 keyword = keywords[Math.round(keywords.length * Math.random())];
 document.getElementById('param1').value = keyword;
