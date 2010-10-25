@@ -8,8 +8,10 @@
 
 <h1>本棚演算 - 本棚.orgのデータを使ったデータマイニング</h1>
 
+<div>
 ユーザが指定した演算式を使ってデータマイニングができます。
-<a href="enzan.swf">動画デモ</a>
+<a href="<%= url_for('enzan/enzan.swf') %>">動画デモ</a>
+</div>
 
 <div style="float:left; width:45%;">
   <h2>演算式作成</h2>
@@ -18,14 +20,15 @@
     > <span id="commandstr"></span>
     </div>
   </div>
-  <input type="button" id="clear" value="クリヤ">
-  <input type="button" id="delete" value="最後の演算を削除">
-  <input type="button" id="execute" value="演算実行">
+  <!-- input type="button" id="clear" value="クリヤ"-->
+  <input type="button" id="execute" value="実行">
+  <input type="button" id="delete" value="削除">
   <p>
   下のボタンを使って「増井の本棚の本のリスト」のような演算式を生成してから
-<input type="button" id="execute2" value="演算実行">
+<input type="button" id="execute2" value="実行">
 ボタンを押して下さい。右に結果が表示されます。
-  <!-- 「重なり」というのは演算実行結果の左側に表示される数字です。 -->
+<br>
+「重み」というのは演算実行結果の左側に表示される数字です。
 
   <!-- <h2>演算式生成</h2> -->
   <div style="background-color:#ffdddd;">
@@ -150,6 +153,9 @@ function buttonpushed(event){
   event.target.id.match(/button(.*)$/);
   id = RegExp.$1
   paramstr = document.getElementById('param'+id).value
+  if(buttons[id][1][0] != '.'){
+    clear();
+  }
   s = buttons[id][1];
   if(s.match(/#/)){
     paramtype = buttons[id][2];
@@ -217,7 +223,7 @@ for(i=0;i<buttons.length;i++){
   table.appendChild(tr);
 }
 document.getElementById('param0').value = "増井";
-document.getElementById('param1').value = "バカの壁";
+document.getElementById('param1').value = "電子書籍";
 document.getElementById('param2').value = "test";
 document.getElementById('param5').value = "10";
 document.getElementById('param6').value = "10";
@@ -226,6 +232,15 @@ document.getElementById('param8').value = "test";
 document.getElementById('param9').value = "test";
 document.getElementById('param10').value = "test";
 
+keywords = [
+  '有川浩',
+  '電子書籍',
+  'けいおん',
+  '水木しげる',
+  '舞城王太郎',
+];
+keyword = keywords[Math.round(keywords.length * Math.random())];
+document.getElementById('param1').value = keyword;
 
 button = document.getElementById("delete");
 button.onmousedown = del;

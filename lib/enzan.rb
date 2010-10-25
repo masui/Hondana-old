@@ -10,7 +10,6 @@
 #
 
 require 'digest/md5'
-require 'cgi'
 
 $KCODE = 'UTF8'
 
@@ -32,11 +31,11 @@ class Enzan
     @@rootdir = rootdir
     if !@@initialized then
       @@initialized = true
-      File.open("#{rootdir}/enzan/marshal.bookinfo"){ |f|
+      File.open("#{@@rootdir}/enzan/marshal.bookinfo"){ |f|
         @@bookinfo = Marshal.load(f)
         # @@bookinfo['0123456789'] = { title:'タイトル', authors:'著者', isbn:'1234567890' }
       }
-      File.open("#{rootdir}/enzan/marshal.shelfbooks"){ |f|
+      File.open("#{@@rootdir}/enzan/marshal.shelfbooks"){ |f|
         @@shelf_books = Marshal.load(f)
 	# @@shelf_books['増井'] = ['0123456789', '1234567890', ...]
       }
@@ -168,7 +167,7 @@ class EnzanData
   
   def save(name)
     hash = Digest::MD5.new.hexdigest(name).to_s
-    File.open("#{rootdir}/enzan/data/#{hash}","w"){ |f|
+    File.open("#{Enzan.rootdir}/enzan/data/#{hash}","w"){ |f|
       f.print Marshal.dump(self)
     }
     self
@@ -351,7 +350,7 @@ class Books < EnzanData
 
   def save(name)
     hash = Digest::MD5.new.hexdigest(name).to_s
-    File.open("#{rootdir}/enzan/data/#{hash}","w"){ |f|
+    File.open("#{Enzan.rootdir}/enzan/data/#{hash}","w"){ |f|
       f.print Marshal.dump(self)
     }
     self
@@ -378,15 +377,15 @@ class Array
   end
 end
 
-#def data(name)
-#  hash = Digest::MD5.new.hexdigest(name).to_s
-#  file = "#{rootdir}/enzan/data/#{hash}"
-#  if File.exist?(file) then
-#    Marshal.load(File.open("#{rootdir}/enzan/data/#{hash}"))
-#  else
-#    EnzanData.new
-#  end
-#end
+def data(name)
+  hash = Digest::MD5.new.hexdigest(name).to_s
+  file = "#{Enzan.rootdir}/enzan/data/#{hash}"
+  if File.exist?(file) then
+    Marshal.load(File.open("#{Enzan.rootdir}/enzan/data/#{hash}"))
+  else
+    EnzanData.new
+  end
+end
 
 if __FILE__ == $0
   Enzan.new('http://masui.sfc.keio.ac.jp/hondana2','/Users/masui/hondana2')
