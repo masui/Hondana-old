@@ -86,23 +86,25 @@ ActionController::Routing::Routes.draw do |map|
   # http://hondana.org/masui
   map.connect ':shelfname/',
               :controller => 'shelf',
-              :action => 'show'
+              :action => 'show',
+	      :requirements => { :shelfname => /[^\/]*/ }
 
   # http://hondana.org/masui/0123456789
   map.connect ':shelfname/:isbn',
               :controller => 'shelf',
               :action => 'edit',
-              :requirements => { :isbn => /\d{9}[\dX]/ }
+              :requirements => { :isbn => /\d{9}[\dX]/, :shelfname => /[^\/]*/ }
 
   # http://hondana.org/masui/0123456789.html
   map.connect ':shelfname/:isbn',
               :controller => 'shelf',
               :action => 'edit',
-              :requirements => { :isbn => /\d{9}[\dX]\.html/ }
+              :requirements => { :isbn => /\d{9}[\dX]\.html/, :shelfname => /[^\/]*/ }
 
   map.connect ':shelfname/:action',
               :controller => 'shelf',
-	      :requirements => {}
+	      :requirements => { :shelfname => /[^\/]*/ }
+#	      :requirements => {}
 #              :requirements => { :action => /^(datalist|help|edit|write|newbooks|add|delete|rename|setname|similar|show.*|category_.*|profile_.*|search|cookieset|cookiereset)/ }
 #              :requirements => { :action => /^(datalist|help|edit|write|newbooks|add|delete|rename|setname|show|show_.*|category_.*|profile_.*)/ }
 #              とするとおかしなことになったのだが...
