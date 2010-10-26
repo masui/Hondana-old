@@ -50,38 +50,30 @@ ActionController::Routing::Routes.draw do |map|
 
   #
   # /iqauth/... というURLはactionとみなすことにする
-  # /iqauth/create, etc.
+  #   create
+  #   register
+  #   getdata
   #
   map.connect 'iqauth/:action/:id',
               :controller => 'iqauth'
 
-#  map.connect 'iqauth/create/:id',
-#              :controller => 'iqauth',
-#              :action => 'create'
-#
-#  map.connect 'iqauth/register/:id',
-#              :controller => 'iqauth',
-#              :action => 'register'
-#
-#  map.connect 'iqauth/getdata/:id',
-#              :controller => 'iqauth',
-#              :action => 'getdata'
-
   #
   # /bookshelf/... というURLはactionとみなすことにする
-  # /bookshelf/search, /bookshelf/alllist, etc.
+  # /bookshelf/list, /bookshelf/search, /bookshelf/alllist, etc.
   # APIに使える?
+  #  list => 本棚トップページ
+  #  alllist => 全本棚リスト
+  #  search => 本検索
+  #  shelfsearch => 本棚検索
   #
   map.connect 'bookshelf/:action',
               :controller => 'bookshelf'
 
-#  map.connect 'bookshelf/search',
-#              :controller => 'bookshelf',
-#              :action => 'search'
-#
-#  map.connect 'bookshelf/alllist',
-#              :controller => 'bookshelf',
-#              :action => 'alllist'
+  # /bookshelf/search/増井,
+  # /bookshelf/shelfsearch/増井
+  # /bookshelf/shelfsearch/Miyashita が何故か動かない
+  map.connect 'bookshelf/:action/:q',
+              :controller => 'bookshelf'
 
   # http://hondana.org/masui
   map.connect ':shelfname/',
