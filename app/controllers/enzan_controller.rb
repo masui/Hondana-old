@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 class EnzanController < ApplicationController
 
   require 'enzan'
@@ -9,7 +11,7 @@ class EnzanController < ApplicationController
 
   # Enzan.new('http://masui.sfc.keio.ac.jp/hondana2',RAILS_ROOT)
 
-  Enzan.new(relative_url_root,RAILS_ROOT) # これで良いのかよくわからないが...
+  Enzan.new(relative_url_root,RAILS_ROOT) # これでいいのかな?
 
   def index
   end
