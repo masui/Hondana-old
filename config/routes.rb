@@ -16,22 +16,6 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect 'piclens.rss', :controller => 'bookshelf', :action => 'piclens'
 
-  # http://hondana.org/search/keyword
-  #map.connect 'search/:q',
-  #           :controller => 'search',
-  #           :action => 'search'
-
-  #map.connect 'search/search',
-  #            :controller => 'search',
-  #            :action => 'search'
-
-#   map.connect 'stylesheets/enzan.css'
-# 
-# #  map.connect 'enzan/enzan.swf'
-# #  map.connect 'enzan/index.html'
-# 
-# map.connect 'enzan/:x'
-# 
   map.connect 'enzan',
               :controller => 'enzan',
               :action => 'index'
@@ -39,10 +23,6 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'enzan/index.html',
               :controller => 'enzan',
               :action => 'index'
- 
-  map.connect 'enzan/recent.html',
-              :controller => 'enzan',
-              :action => 'recent'
  
   map.connect 'enzan/cmd',
                :controller => 'enzan',
@@ -70,7 +50,7 @@ ActionController::Routing::Routes.draw do |map|
               :controller => 'bookshelf'
 
   # /bookshelf/search/増井,
-  # /bookshelf/shelfsearch/増井
+  # /bookshelf/shelfsearch/増井, etc.
   # /bookshelf/shelfsearch/Miyashita が何故か動かない
   map.connect 'bookshelf/:action/:q',
               :controller => 'bookshelf'
