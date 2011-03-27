@@ -5,7 +5,7 @@ load:
 	mysql -u root hondana < /tmp/hondana.mysqldump
 
 everything: load
-	cd db; make
+	cd enzan; make
 
 push:
 	git push pitecan.com:/home/masui/git/hondana-sfc.git
