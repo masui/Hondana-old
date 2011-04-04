@@ -132,6 +132,12 @@ class EnzanData
     }
   end
   
+  def collect # added 2011/4/4
+    list.collect { |data|
+      yield data
+    }
+  end
+  
   def count(name)
     @data[name].to_i
   end
