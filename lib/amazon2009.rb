@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # -*- ruby -*-
 #
 
@@ -15,8 +16,10 @@ class MyAmazon
   #
   # 増井のAccessKeyとSecretKey
   #
-  @@access_key = '1TFQ8M0E4GRS65KYWX02'
-  @@secret_key = 'dhBOeLzKqhxZ2byKETCODAugYx+iLWlzpDvRtbgw'
+#  @@access_key = '1TFQ8M0E4GRS65KYWX02'
+#  @@secret_key = 'dhBOeLzKqhxZ2byKETCODAugYx+iLWlzpDvRtbgw'
+  @@access_key = 'AKIAJGLOWXLCOFGJGJPQ'
+  @@secret_key = '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'
   @@assoc_id =  "pitecancom-22"
 
   def initialize

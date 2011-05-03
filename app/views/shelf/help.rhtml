@@ -9,7 +9,7 @@
     <li> 共有の本棚を簡単に作れます。
     <li>ログイン機能がないので他人の本棚でも自由に書き換えることができてしまいます。
     <li>書込みを制限したい場合は
-<%= link_to '本棚情報変更', {:action => 'profile_edit', :shelf => @shelf.name} %>ページで「画像認証利用」をチェックし、
+<%= link_to '本棚情報変更', {:action => 'profile_edit_x', :shelf => @shelf.name} %>ページで「画像認証利用」をチェックし、
 <%= link_to '画像なぞなぞ認証問題', {:controller => 'iqauth', :action => 'create', :id => @shelf.id} %>を作成して利用下さい。
     <li>
     「評価」は文字列としてソートされますので、

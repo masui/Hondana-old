@@ -234,7 +234,7 @@ class ShelfController < ApplicationController
     redirect_to :action => (@newcategory == '' ? 'category_text' : 'category_detail'), :category => @newcategory
   end
 
-  def profile_edit
+  def profile_edit_x
     getshelf
   end
 
@@ -248,7 +248,7 @@ class ShelfController < ApplicationController
       @shelf.use_iqauth = params[:shelf][:use_iqauth]
       @shelf.save
     end
-    redirect_to :action => 'profile_edit'
+    redirect_to :action => 'profile_edit_x'
   end
 
   def rename
