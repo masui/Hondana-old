@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
 class ShelfController < ApplicationController
 #  caches_page :show_recent_image, :edit
 #  caches_page :show_score_detail
 
   # require '/home/masui/hondana/lib/myamazon' # ?????
 #  require 'myamazon'
-  require 'amazon2009'
+#  require 'amazon2009'
+  require 'amazon2011'
   require 'iqauth'
   require 'atom'
   require 'kconv'
@@ -234,21 +236,29 @@ class ShelfController < ApplicationController
     redirect_to :action => (@newcategory == '' ? 'category_text' : 'category_detail'), :category => @newcategory
   end
 
-  def profile_edit_x
+  def profile_edit_xx
     getshelf
   end
 
   def profile_write
     getshelf
     description = params[:shelf][:description]
+    affiliateid = params[:shelf][:affiliateid]
+    url = params[:shelf][:url]
     if description !~ /href=/i then
-      @shelf.description = description
-      @shelf.url = params[:shelf][:url]
-      @shelf.affiliateid = params[:shelf][:affiliateid]
-      @shelf.use_iqauth = params[:shelf][:use_iqauth]
-      @shelf.save
+      if description !~ /</ && description !~ /%3c/i then
+        if affiliateid !~ /</ && affiliateid !~ /%3c/i then
+          if url !~ /</ && url !~ /%3c/i then
+            @shelf.description = description
+            @shelf.url = url
+            @shelf.affiliateid = affiliateid
+            @shelf.use_iqauth = params[:shelf][:use_iqauth]
+            @shelf.save
+          end
+        end
+      end
     end
-    redirect_to :action => 'profile_edit_x'
+    redirect_to :action => 'profile_edit_xx'
   end
 
   def rename
@@ -260,14 +270,16 @@ class ShelfController < ApplicationController
     getshelf
     newname = params[:shelf][:name]
 
-#  shelfname = 'タカヒロ'
-# # @shelf = Shelf.find(:first, :conditions => ["name = ?", shelfname])
-#  @shelf = Shelf.find(:first, :conditions => ["name like ?", "タカヒロ%"])
-#  File.open("/tmp/xxxxx","w"){ |f|
-#    f.puts @shelf
-#  }
-#  newname = "takahiroyyy"
-# # return
+    if newname !~ /!!$/ then
+      redirect_to :action => 'show', :shelfname => @shelf.name
+      return
+    end
+    newname.sub!(/!!$/,'')
+
+    if newname.index('<') || newname =~ /%3c/i then
+      redirect_to :action => 'show', :shelfname => @shelf.name
+      return
+    end
 
     #return # SPAM taisaku masui
     if newname == '' then

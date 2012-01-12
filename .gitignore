@@ -4,3 +4,5 @@ log/
 *.save
 *.save/
 public/atom.xml
+db/
+

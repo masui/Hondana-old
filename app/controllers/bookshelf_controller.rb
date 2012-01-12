@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class BookshelfController < ApplicationController
 #  caches_page :list, :alllist  # トップページのページキャッシュを有効にする
 
@@ -41,23 +42,24 @@ class BookshelfController < ApplicationController
 
   def create
     shelfname = params[:shelfname]
-    if shelfname == '' then
+    if shelfname == '' || shelfname.index('<') || shelfname =~ /%3c/i then
       redirect_to :action => 'list'
+    else
+      @shelf = Shelf.find(:first, :conditions => ["name = ?", shelfname])
+      if @shelf.nil? then
+        @shelf = Shelf.new
+        @shelf.name = params[:shelfname]
+        @shelf.description = ''
+        @shelf.url = ''
+        @shelf.affiliateid = ''
+        @shelf.theme = ''
+        @shelf.themeurl = ''
+        @shelf.listtype = 'image'
+        @shelf.sorttype = 'recent'
+        @shelf.modtime = Time.now
+        @shelf.save
+      end
+      redirect_to :controller => 'shelf', :action => 'show', :shelfname => @shelf.name
     end
-    @shelf = Shelf.find(:first, :conditions => ["name = ?", shelfname])
-    if @shelf.nil? then
-      @shelf = Shelf.new
-      @shelf.name = params[:shelfname]
-      @shelf.description = ''
-      @shelf.url = ''
-      @shelf.affiliateid = ''
-      @shelf.theme = ''
-      @shelf.themeurl = ''
-      @shelf.listtype = 'image'
-      @shelf.sorttype = 'recent'
-      @shelf.modtime = Time.now
-      @shelf.save
-    end
-    redirect_to :controller => 'shelf', :action => 'show', :shelfname => @shelf.name
   end
 end

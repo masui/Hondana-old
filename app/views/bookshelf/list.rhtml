@@ -7,6 +7,7 @@
     <%= stylesheet_link_tag "bookshelf" %>
     <%= javascript_include_tag "cookiejump" %>
     <link rel="alternate" type="application/atom+xml" title="hondana.org" href="http://hondana.org/atom.xml">
+    <link rel="shortcut icon" href="/favicon.ico">
   </head>
   <body leftmargin="0" marginheight="0" marginwidth="0" topmargin="0">
     <div id="home_header">
@@ -33,7 +34,7 @@
     <div id="container">
       <div id="shelf_v">
         <div id="shelf">
-          <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
+          <div class="shelf_h"><%= image_tag("/images/fms.gif", :class => "fms") %></div>
           <table width="100%" height="128" border="0" cellspacing="0" cellpadding="0">
             <tr>
               <td width="8"></td>
@@ -46,12 +47,12 @@
               <td width="8"></td>
             </tr>
           </table>
-          <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
+          <div class="shelf_h"><%= image_tag("/images/fms.gif", :class => "fms") %></div>
           <div class="list">
             <table width="100%">
               <tr>
                 <td align="center">
-                  <% form_tag ({:action => 'create'}) do %>
+                  <% form_tag({:action => 'create'}) do %>
                     蔵書、気になる本、共有の本棚、何でもどうぞ。本棚の名前を入力して「作成」ボタンを押すと本棚ができます。
                     <%= text_field_tag 'shelfname' %> の本棚を <%= submit_tag '作成' %>
                   <% end %>
@@ -150,7 +151,7 @@
 		<td width="1" bgcolor="#999999"></td>
 		<td width="5"></td>
 		<td valign="top">
-                  <% form_tag ({:controller => 'bookshelf', :action => 'shelfsearch'}) do %>
+                  <% form_tag({:controller => 'bookshelf', :action => 'shelfsearch'}) do %>
                     <h2>最近更新された本棚15 　　　　 本棚を探す  <%= text_field_tag 'q' %> <%= submit_tag '検索' %></h2>
                   <% end %>
 		    <div id='listdiv'>
@@ -201,7 +202,7 @@
 	      </tr>
 	    </table>
 	  </div>
-	  <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
+	  <div class="shelf_h"><%= image_tag("/images/fms.gif", :class => "fms") %></div>
 	</div>
       </div>
       <div id="shelf_shade"></div>
