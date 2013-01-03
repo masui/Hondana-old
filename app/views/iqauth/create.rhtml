@@ -2,14 +2,15 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>ユーザ認証</title>
+<%= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" %>
 <%= javascript_include_tag "md5" %>
 <%= javascript_include_tag "iqauth" %>
 <%= javascript_include_tag "json" %>
 
 <script type="text/javascript">
-var getdata = '<%= url_for :controller => 'iqauth', :action => 'getdata' %>';
-
+var iqpath = "/iqauth";
 var id = '<%= @id %>';
+
 var password;
 var newpassword;
 </script>
@@ -238,7 +239,8 @@ function confirm(q){
       //  "password=" + escape(password) + '&' +
       //  "newpassword=" + escape(newpassword) + '&' +
       //  "query=" + encodeURIComponent(iqauth.data.toJSONString());
-      request = q.iqpath + "/iqauth/register/" + id + '?' +
+      // request = q.iqpath + "/iqauth/register/" + id + '?' +
+      request = q.iqpath + "/register/" + id + '?' +
         "password=" + escape(password) + '&' +
         "newpassword=" + escape(newpassword) + '&' +
         "query=" + encodeURIComponent(iqauth.data.toJSONString());
@@ -289,7 +291,9 @@ if (typeof window.XMLHttpRequest == "undefined") {
 
 var body = document.body;
 //var q = new IQAuth(id,"http://www.hondana.org/ImageAuth");
-var q = new IQAuth(id,"../..");
+//var q = new IQAuth(id,"../..");
+var q = new IQAuth(id,iqpath);
+
 if(q.passhash != '' && q.data.length > 0){ // 問題がすでに定義されている
   challenge(q); // 現在の問題を解かせてパスワードと比較
 }

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # -*- ruby -*-
 #
 # 本棚における画像なぞなぞ認証実行JavaScriptを生成する
@@ -7,6 +8,9 @@ def iqauth_js(shelf,book,entry)
   categories = entry.categories.to_s.gsub(/'/,"\\\\'")
   score = entry.score.to_s.gsub(/'/,"\\\\'")
   comment = entry.comment.to_s.gsub(/'/,"\\\\'").gsub(/[\r\n]+/,"\\\\n\\\\\n")
+
+  # iqpath = url_for :controller => 'iqauth', :action => 'getdata', :id => shelf.id
+  iqpath = "/iqauth"
 
   <<EOF
 <script type="text/javascript">
@@ -19,6 +23,8 @@ var score = '#{score}';
 var comment = '#{comment}';
 var usequiz = #{shelf.use_iqauth.to_i > 0 ? 'true' : 'false'};
 
+var iqpath = '#{iqpath}';
+var id = '#{shelf.id}';
 
 // 以下は大体固定部分
 var authorized = false;
@@ -44,7 +50,9 @@ function showquiz(){
   var div;
   //q = new IQAuth(id,"http://www.hondana.org/ImageAuth");
   //q = new IQAuth(id,"../..");
-  q = new IQAuth(id,"#{RAILS_ROOT}");
+  //q = new IQAuth(id,"#{RAILS_ROOT}");
+  //q = new IQAuth(id,getdata);
+  q = new IQAuth(id,iqpath);
   div = document.getElementById('td00');
   div.innerHTML = '認　　証';
   div.vAlign = 'top';

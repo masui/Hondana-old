@@ -21,9 +21,10 @@ function IQAuth(id,iqpath){
   //  データをサーバから取得すべき。データを取得できるまで待つ。
   //  取得できなければ失敗を返す。(認証不可状態)
 
+  var getpath = iqpath + "/getdata/" + id;
   var d = $.ajax({
 	  type: 'GET',
-	  url: getdata,
+	  url: getpath,
 	  async: false // 同期
   }).responseText;
   eval("d =" + this.ajaxFilter(d)); // JASON.parse(d) ?
