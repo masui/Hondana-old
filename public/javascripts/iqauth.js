@@ -10,66 +10,9 @@
 // q.calcPassword() // 現在選択された答からパスワードを計算
 //
 
-//function IQAuth(id,data,passhash){ 旧版
-//  this.id = id;
-//  this.data = data;
-//  this.passhash = passhash;
-
-function IQAuthxxx(id,iqpath){
-  alert(id);
-}
-
-// //function getXmlHttpObject() {
-//   if (typeof window.XMLHttpRequest == "undefined") {
-//     if(typeof window.ActiveXObject == "function") {
-//       try {
-//         new ActiveXObject("Msxml2.XMLHTTP");
-//         window.XMLHttpRequest = function(){
-//            return new ActiveXObject("Msxml2.XMLHTTP");
-//         }
-//       }
-//       catch (e) {
-//         try {
-//           new ActiveXObject("Microsoft.XMLHTTP");
-//           window.XMLHttpRequest = function(){
-//             return new ActiveXObject("Microsoft.XMLHTTP");
-//           }
-//         }
-//         catch (e) {
-//           // 試行を断念する
-//         }
-//       }
-//     }
-//   }
-//   // else if (未知のブラウザ) { }
-// //  return new XMLHtttpRequest();
-// //}
-function getXmlHttpObject() {
-  var xmlhttp;
-  /*@cc_on
-  @if (@_jscript_version >= 5)
-    try {
-      xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-    } catch (e) {
-      try {
-        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-      } catch (E) {
-        xmlhttp = false;
-      }
-    }
-  @else
-    xmlhttp = false;
-  @end @*/
-  if (!xmlhttp && typeof XMLHttpRequest != 'undefined') {
-    try {
-      xmlhttp = new XMLHttpRequest();
-      xmlhttp.overrideMimeType("text/xml"); 
-    } catch (e) {
-      xmlhttp = false;
-    }
-  }
-  return xmlhttp;
-}
+//function IQAuthxxx(id,iqpath){
+//  alert(id);
+//}
 
 function IQAuth(id,iqpath){
   this.id = id;
@@ -78,20 +21,13 @@ function IQAuth(id,iqpath){
   //  データをサーバから取得すべき。データを取得できるまで待つ。
   //  取得できなければ失敗を返す。(認証不可状態)
 
-  var xmlhttp;
-  xmlhttp = getXmlHttpObject();
-  //xmlhttp = new XMLHttpRequest();
-//  xmlhttp.overrideMimeType("text/xml; charset=utf-8"); // ?? よくわからない
-  //request = iqpath + "/programs/getdata.cgi?id=" + escape(id);
-  //request = iqpath + "/iqauth/getdata/" + escape(id);
+  var d = $.ajax({
+	  type: 'GET',
+	  url: getdata,
+	  async: false // 同期
+  }).responseText;
+  eval("d =" + this.ajaxFilter(d)); // JASON.parse(d) ?
 
-  //request = "/iqauth/getdata/" + escape(id);
-
-  xmlhttp.open("GET", getdata, false); // 同期読出し
-  xmlhttp.send(null);
-
-  var d;
-  eval("d =" + this.ajaxFilter(xmlhttp.responseText));
   this.passhash = d[0];
   this.data = d[1];
 

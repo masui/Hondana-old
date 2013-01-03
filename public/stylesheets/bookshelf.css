@@ -1,5 +1,6 @@
 body  {
-	background-color: white;
+  background-color: white;
+  font-family: sans-serif; 
 }
 h1     {
 	font-size: large;
