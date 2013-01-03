@@ -5,47 +5,48 @@
     <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
     <div class="list">
       <h2>本棚情報変更</h2>
-      <p>
+      <p></p>
       <% form_tag({:shelfname => @shelf.name, :action => 'profile_write'}) do %>
-        <table>
-          <tr>
-            <td valign='top'>本棚の説明</td>
-            <td>
-              <%= text_area 'shelf', 'description', :wrap => 'virtual', :cols => 80, :rows => 10, :align => 'top' %>
-            </td>
-          </tr>
-          <tr>
-            <td>関連URL</td>
-            <td>
-              <%= text_field 'shelf', 'url', :size => 80 %>
-            </td>
-          </tr>
-          <tr>
-            <td>アソシエイトID</td>
-            <td>
-              <%= text_field 'shelf', 'affiliateid', :size => 80 %>
-            </td>
-          </tr>
-          <tr>
-            <td>画像認証利用</td>
-            <td>
-	      <%= check_box "shelf", "use_iqauth" %>
-              <!-- href="http://www.hondana.org/ImageAuth/programs/create.cgi?id=<%= @shelf.id %>" target='blank'>認証問題作成</a>が必要です -->
-	      <%= link_to '認証問題作成', {:controller => 'iqauth', :action => 'create', :id => @shelf.id} %>が必要です
-
-            </td>
-          </tr>
-        </table>
-        <p>
-        <%= submit_tag "　変更　" %>
+      <table>
+        <tr>
+          <td valign='top'>本棚の説明</td>
+          <td>
+            <%= text_area 'shelf', 'description', :wrap => 'virtual', :cols => 80, :rows => 10, :align => 'top' %>
+          </td>
+        </tr>
+        <tr>
+          <td>関連URL</td>
+          <td>
+            <%= text_field 'shelf', 'url', :size => 80 %>
+          </td>
+        </tr>
+        <tr>
+          <td>アソシエイトID</td>
+          <td>
+            <%= text_field 'shelf', 'affiliateid', :size => 80 %>
+          </td>
+        </tr>
+        <tr>
+          <td>画像認証利用</td>
+          <td>
+	    <%= check_box "shelf", "use_iqauth" %>
+            <!-- href="http://www.hondana.org/ImageAuth/programs/create.cgi?id=<%= @shelf.id %>" target='blank'>認証問題作成</a>が必要です -->
+	    <%= link_to '認証問題作成', {:controller => 'iqauth', :action => 'create', :id => @shelf.id} %>が必要です
+	    
+          </td>
+        </tr>
+      </table>
+      <p></p>
+      <%= submit_tag "　変更　" %>
       <% end %>
     </div>
     <div class="shelf_h"><%= image_tag ("/images/fms.gif", :class => "fms") %></div>
   </div>
-<div id="shelf_shade"></div>
-
-<div id='menu_bottom'>
-  <%= render :partial => 'listmenu' %>
+  <div id="shelf_shade"></div>
+  
+  <div id='menu_bottom'>
+    <%= render :partial => 'listmenu' %>
+  </div>
+  
+  <%= render :partial => 'shared/footer' %>
 </div>
-
-<%= render :partial => 'shared/footer' %>

@@ -236,7 +236,7 @@ class ShelfController < ApplicationController
     redirect_to :action => (@newcategory == '' ? 'category_text' : 'category_detail'), :category => @newcategory
   end
 
-  def profile_edit_xx
+  def profile_edit
     getshelf
     # SPAMよけのためにCookieを設定してみる。
     # Cookieが設定されているときだけ書込み可能にする
@@ -248,7 +248,7 @@ class ShelfController < ApplicationController
     }
   end
 
-  def profile_write_x
+  def profile_write
     getshelf
 
     if cookies[:CurrentShelf] == @shelf.name then
@@ -271,7 +271,7 @@ class ShelfController < ApplicationController
         end
       end
     end
-    redirect_to :action => 'profile_edit_xx'
+    redirect_to :action => 'profile_edit'
   end
 
   def rename
