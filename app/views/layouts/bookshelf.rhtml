@@ -19,7 +19,9 @@
   <body topmargin='0' marginwidth='0' marginheight='0' leftmargin='0'>
     <div id="container">
 <% end %>
-<%= @content_for_layout %>
+
+<%= yield %>
+
 <% if @q.to_s != '' || !@allshelves.nil? then %>
     </div>
   </body>
