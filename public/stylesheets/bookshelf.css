@@ -33,3 +33,7 @@ h2   { font-size: medium; font-weight: normal; margin: 0; padding: 0 }
 #book_noimage  { background-image: url("../images/bg_list.jpg"); margin: 0; padding: 0; width: 80px; height: 120px; overflow: hidden }
 #shelf_h { background-image: url("../images/bg_shelf_h.jpg"); background-repeat: repeat; margin: 0; padding: 0; width: 100%; height: 10px; max-height: 10px }
 
+/* 下線をやめてみる 2013/01/03 20:38:42 */
+a:link { color: #0000e0 ; }
+a:visited { color: #0000e0 ;}
+a { text-decoration: none; }
