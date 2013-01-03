@@ -238,22 +238,35 @@ class ShelfController < ApplicationController
 
   def profile_edit_xx
     getshelf
+    # SPAMよけのためにCookieを設定してみる。
+    # Cookieが設定されているときだけ書込み可能にする
+    cookies[:CurrentShelf] = {
+      :value => @shelf.name,
+      :expires => 20.minutes.from_now,
+      :path => '/',
+      :domain => 'hondana.org'
+    }
   end
 
   def profile_write_x
     getshelf
-    description = params[:shelf][:description]
-    affiliateid = params[:shelf][:affiliateid]
-    url = params[:shelf][:url]
-    if description !~ /href=/i then
-      if description !~ /</ && description !~ /%3c/i then
-        if affiliateid !~ /</ && affiliateid !~ /%3c/i then
-          if url !~ /</ && url !~ /%3c/i then
-            @shelf.description = description
-            @shelf.url = url
-            @shelf.affiliateid = affiliateid
-            @shelf.use_iqauth = params[:shelf][:use_iqauth]
-            @shelf.save
+
+    if cookies[:CurrentShelf] == @shelf.name then
+      description = params[:shelf][:description]
+      affiliateid = params[:shelf][:affiliateid]
+      url = params[:shelf][:url]
+      if description !~ /href=/i then
+        # 単純なタグだけ許す細工
+        desc = description.gsub(/<(\/?(b|br|p|ul|ol|li|dl|dt|dd|hr|pre|blockquote|del))>/i,'')
+        if desc !~ /</ && description !~ /%3c/i then
+          if affiliateid !~ /</ && affiliateid !~ /%3c/i then
+            if url !~ /</ && url !~ /%3c/i then
+              @shelf.description = description
+              @shelf.url = url
+              @shelf.affiliateid = affiliateid
+              @shelf.use_iqauth = params[:shelf][:use_iqauth]
+              @shelf.save
+            end
           end
         end
       end
