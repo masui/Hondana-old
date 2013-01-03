@@ -240,7 +240,7 @@ class ShelfController < ApplicationController
     getshelf
   end
 
-  def profile_write
+  def profile_write_x
     getshelf
     description = params[:shelf][:description]
     affiliateid = params[:shelf][:affiliateid]
@@ -514,6 +514,7 @@ class ShelfController < ApplicationController
     render :layout => false   # これがあるとclicktime.rhtmlは要らない?
   end
 
+  # デフォルト本棚を指定するのに使ってる
   def cookieset
     getshelf
     cookies[:ShelfDir] = {

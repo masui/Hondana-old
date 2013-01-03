@@ -17,7 +17,7 @@ function loadCookie(arg){ //argはデータ識別文字列
 
 //
 // リファラが存在する場合(リンクから飛んできた場合)は何もしない
-// 存在する場合はCookieのShelfDirで定義された本棚に飛んでしまう。
+// 存在しない場合はCookieのShelfDirで定義された本棚に飛んでしまう。
 //
 shelfdir = loadCookie('ShelfDir');
 //alert(shelfdir);
