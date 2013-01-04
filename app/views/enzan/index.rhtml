@@ -1,44 +1,31 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<%= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" %>
+<%= javascript_include_tag "json2" %>
 <%= stylesheet_link_tag 'enzan' %>
 
 <title>本棚演算</title>
 <body>
 
-<h1>本棚演算 - 本棚.orgのデータを使ったデータマイニング</h1>
+<h1>本棚演算 - 本棚.orgデータマイニング</h1>
 
-<div>
-ユーザが指定した演算式を使ってデータマイニングができます。
-<a href="<%= url_for('enzan/enzan.swf') %>">動画デモ</a>
+<ul>
+<li>下のボタンで「<a href="/enzan?shelf=増井">増井の本棚 と類似する本棚10個</a>」のような演算式を生成すると右側に結果が表示されます。
+<li>「重み」というのは演算実行結果の左側に表示される数字です。
+</ul>
+
+<div class='expression'>
+<input type="button" id="delete" value="削除" />
+演算式 = <span id="commandstr"></span>
 </div>
+<p>
 
 <div style="float:left; width:45%;">
-  <h2>演算式作成</h2>
-  <div>
-    <div class='expression'>
-    > <span id="commandstr"></span>
-    </div>
-  </div>
-  <!-- input type="button" id="clear" value="クリヤ"-->
-  <!-- input type="button" id="execute" value="実行"-->
-  <p>
-  <input type="button" id="delete" value="削除">
-  <p>
-<!--
-  下のボタンを使って「増井の本棚の本のリスト」のような演算式を生成してから
-<input type="button" id="execute2" value="実行">
-ボタンを押して下さい。右に結果が表示されます。
--->
-  下のボタンを使って「増井の本棚の本のリスト」のような演算式を生成して下さい。右に結果が表示されます。
-<br>
-「重み」というのは演算実行結果の左側に表示される数字です。
 
-  <!-- <h2>演算式生成</h2> -->
-  <div style="background-color:#ffdddd;">
     <table id="buttons">
     </table>
-  </div>
+
 
   <h2>最近使われた演算式</h2>
   <ul id="recent">
@@ -46,8 +33,7 @@
 
 </div>
 
-<div style="float:right;width:50%;">
-  <h2>演算結果</h2>
+<div style="float:right;width:55%">
   <div id="result">
   </div>
 </div>
@@ -59,24 +45,17 @@ var commandstrstack = [];
 var commandstackind = 0;
 var recentcommands = [];
 
-function createXmlHttp(){
-  if (window.ActiveXObject) {
-    return new ActiveXObject("Microsoft.XMLHTTP");
-  } else if (window.XMLHttpRequest) {
-    return new XMLHttpRequest();
-  } else {
-    return null;
-  }
-}
+var clickedinput = -1;
 
 function execute(){
   if(commandstackind == 0){
-    document.getElementById('result').innerHTML = '';
+    $('#result').text('');
     return;
   }
-  document.getElementById('result').innerHTML = '計算中... 少々お待ち下さい';
-  xmlhttp = createXmlHttp();
-  command = ""
+
+  $('#result').text('計算中... 少々お待ち下さい');
+  //xmlhttp = createXmlHttp();
+  var command = ""
   for(i=0;i<commandstackind;i++){
     command += commandstack[i];
   }
@@ -86,33 +65,43 @@ function execute(){
   }
 
   recentcommands.unshift(commandstr);
-  var e = document.getElementById('recent');
-  var s = '';
-  var max = recentcommands.length;
-  if(max > 10) max = 10;
-  for(var i=0;i<max;i++){
-    s += '<li>';
-    s += recentcommands[i];
+
+  // 最近使ったコマンドをリスト
+  $('#recent').empty();	      
+  for(var i=0;i<recentcommands.length;i++){
+    if(i >= 10) break;
+    $('#recent').append($('<li>').text(recentcommands[i]));
   }
-  e.innerHTML = s;
 
-//  file = "enzan.cgi?command=" + encodeURIComponent(command) + "&commandstr=" + encodeURIComponent(commandstr);
-//  file = "/hondana2/enzan/" + encodeURIComponent(command) + "&" + encodeURIComponent(commandstr);
-  file = cururl + "/cmd?cmd=" + encodeURIComponent(command); // "/hondana2/enzan", etc.
+  // 演算コマンドを発行して結果を表示
+  var res = $.ajax({
+    type: 'GET',
+    url: '/enzan/calculate',
+    data: {
+      cmd: command,
+    },
+    async: false, // 同期
+  }).responseText;
+  // json.jsのparseJSON()だと何故かうまくいかない
+  res = JSON.parse(res);
 
-  xmlhttp.open("GET", file , true);
-  xmlhttp.onreadystatechange=function() {
-    if (xmlhttp.readyState==4) {
-      d = xmlhttp.responseText.split(/\n/);
-      s = "";
-      for(var i=0;i<d.length;i++){
-        s += d[i];
-        s += "<br>";
-      }
-      document.getElementById('result').innerHTML = s;
+  $('#result').empty();
+  $.each(res,function(i,s){
+    if(s.name){ // 本棚
+      $('#result').append($('<a>').attr('href','/enzan?shelf='+s.name).text(s.weight).attr('class','nextsearch').css('font-weight','bold'));
+      $('#result').append($('<span>').text(' '));
+      $('#result').append($('<a>').attr('href','/'+s.name+'/').text(s.name));
+      $('#result').append($('<span>').text(' ('+s.length+'冊)'));
+      $('#result').append($('<br>'));
     }
-  }
-  xmlhttp.send("");
+    else { // 本
+      $('#result').append($('<a>').attr('href','/enzan?book='+s.title).text(s.weight).attr('class','nextsearch').css('font-weight','bold'));
+      //$('#result').append($('<span>').text(s.weight+' '));
+      $('#result').append($('<a>').attr('href','/'+s.shelves[0]+'/'+s.isbn).text(s.title));
+      $('#result').append($('<span>').text(' ('+s.authors+')'));
+      $('#result').append($('<br>'));
+    }
+  });
 }
 
 var buttons = [
@@ -131,19 +120,20 @@ var buttons = [
 
 function dispcommand(){
   var i;
-  //command = ""
-  // for(i=0;i<commandstackind;i++){
-  //  command += commandstack[i];
-  //}
-  //document.getElementById('command').innerHTML = command;
   commandstr = ""
   for(i=0;i<commandstackind;i++){
     commandstr += commandstrstack[i];
   }
   if(commandstr == ''){
-    commandstr = '(演算式入力エリア)'
+    commandstr = '(下のボタンを押して演算式を入力)'
+    $('#commandstr').css('font-weight','normal');
+    $('#commandstr').css('color','#666');
   }
-  document.getElementById('commandstr').innerHTML = commandstr;
+  else {
+    $('#commandstr').css('font-weight','bold');
+    $('#commandstr').css('color','#000');
+  }
+  $('#commandstr').text(commandstr);
 }
 
 function del(){
@@ -158,45 +148,6 @@ function clear(){
   dispcommand();
 }
 
-function buttonpushed(event){
-  event.target.id.match(/button(.*)$/);
-  id = RegExp.$1
-  paramstr = document.getElementById('param'+id).value
-  if(buttons[id][1][0] != '.'){
-    clear();
-  }
-  s = buttons[id][1];
-  if(s.match(/#/)){
-    paramtype = buttons[id][2];
-    if(paramtype == 'number'){
-      if(! paramstr.match(/^[0-9]+$/)) return;
-    }
-    if(paramtype == 'filename'){
-      if(paramstr.match(/["\\]/)) return;
-    }
-    if(paramtype == 'name'){
-      if(paramstr.match(/["\\]/)) return;
-    }
-  }
-
-  if(buttons[id][3]){
-    if(commandstackind != 0) return;
-  }
-  else {
-    if(commandstackind == 0) return;
-  }
-
-  s = s.replace(/#/,paramstr);
-  commandstack[commandstackind] = s;
-  s = buttons[id][0];
-  s = s.replace(/〜/,paramstr);
-  commandstrstack[commandstackind] = s;
-  commandstackind++;
-  dispcommand();
-
-  execute(); // いきなり実行してしまう
-}
-
 function bookbutton(isbn,title){
   // if(commandstackind != 0) return;
   commandstackind = 0;
@@ -206,61 +157,137 @@ function bookbutton(isbn,title){
   dispcommand();
 }
 
+// <input>枠をクリックしたときボタンクリックが動かないようにする工夫
+var prevfocus = -1;
+var curfocus = -1;
+
+function focusfunc(i){
+  return function(){
+    if(prevfocus != i){
+      prevfocus = curfocus;
+      curfocus = i;
+    }
+    else {
+      prevfocus = curfocus;
+      curfocus = -1;
+    }
+  };
+}
+
+// ボタンを押したとき呼ばれる関数
+function buttonpushed(id){
+  return function(e){
+    if(id == curfocus){
+      curfocus = -1;
+      return;
+    }
+    paramstr = $('#param'+id).val();
+    if(buttons[id][1][0] != '.'){
+      clear();
+    }
+    s = buttons[id][1];
+    if(s.match(/#/)){
+      paramtype = buttons[id][2];
+      if(paramtype == 'number'){
+        if(! paramstr.match(/^[0-9]+$/)) return;
+      }
+      if(paramtype == 'filename'){
+        if(paramstr.match(/["\\]/)) return;
+      }
+      if(paramtype == 'name'){
+        if(paramstr.match(/["\\]/)) return;
+      }
+    }
+    if(buttons[id][3]){
+      if(commandstackind != 0) return;
+    }
+    else {
+      if(commandstackind == 0) return;
+    }
+    s = s.replace(/#/,paramstr);
+    commandstack[commandstackind] = s;
+    s = buttons[id][0];
+    s = s.replace(/〜/,paramstr);
+    commandstrstack[commandstackind] = s;
+    commandstackind++;
+    dispcommand();
+ 
+    execute(); // いきなり実行してしまう
+  }
+}
+
 var i;
-table = document.getElementById('buttons');
+table = $('#buttons');
 for(i=0;i<buttons.length;i++){
   desc = buttons[i];
-  tr = document.createElement('tr');
-  td = document.createElement('td');
-  if(desc[1].match(/#/)){
-    e = document.createElement('input');
-    e.type = 'text';
-    e.style.width = '80pt';
+  tr = $('<tr>');
+  td = $('<td>');
+  button = $('<div>');
+  button.on('click',buttonpushed(i));
+
+  s = buttons[i][0]; // 'と類似する本〜冊 ' など
+  if(a = s.match(/^(.*)(〜)(.*)$/)){
+    button.append($('<span>').text(a[1]+' '));
+    input = $('<input>');
+    input.attr('type','text');
+    input.css('width','60pt');
+    input.attr('id','param'+i);
+    input.on('mousedown',focusfunc(i));
+    button.append(input);
+    button.append($('<span>').text(' '+a[3]));
   }
   else {
-    e = document.createElement('span');
+    button.text(s);
   }
-  e.id = 'param' + i;
-  td.appendChild(e);
-  tr.appendChild(td);
-  e = document.createElement('input');
-  e.type = 'button';
-  e.id = 'button' + i;
-  e.value = desc[0];
-  e.onmousedown = buttonpushed;
-  td = document.createElement('td');
-  td.appendChild(e);
-  tr.appendChild(td);
-  table.appendChild(tr);
+  button.attr('class','button');
+  td.append(button);
+  tr.append(td);
+  table.append(tr);
 }
-document.getElementById('param0').value = "増井";
-document.getElementById('param1').value = "電子書籍";
-document.getElementById('param2').value = "test";
-document.getElementById('param5').value = "10";
-document.getElementById('param6').value = "10";
-document.getElementById('param7').value = "3";
-document.getElementById('param8').value = "test";
-document.getElementById('param9').value = "test";
-document.getElementById('param10').value = "test";
+
+$('#param0').val("増井");
+$('#param1').val("電子書籍");
+$('#param2').val("test");
+$('#param5').val("10");
+$('#param6').val("10");
+$('#param7').val("3");
+$('#param8').val("test");
+$('#param9').val("test");
+$('#param10').val("test");
 
 keywords = [
-  '有川浩',
+  '有川 浩',
   '電子書籍',
   'けいおん',
   '水木 しげる',
   '舞城 王太郎',
 ];
 keyword = keywords[Math.round(keywords.length * Math.random())];
-document.getElementById('param1').value = keyword;
+$('#param1').val(keyword);
 
-button = document.getElementById("delete");
-button.onmousedown = del;
-button = document.getElementById("execute");
-button.onmousedown = execute;
-button = document.getElementById("execute2");
-button.onmousedown = execute;
-button = document.getElementById("clear");
-button.onmousedown = clear;
+$('#delete').on('click',del);
+
+var similarshelf = '<%= params[:similarshelf] %>';
+var shelf = '<%= params[:shelf] %>';
+var book = '<%= params[:book] %>';
+
+// enzan?shelf=増井 のようなリクエストがきたとき類似本棚を検索する
+if(similarshelf != ''){
+  $('#param0').val(similarshelf);
+  buttonpushed(0)();
+  buttonpushed(5)();
+  execute();
+}
+else if(shelf != ''){ // enzan?shelf=増井
+  $('#param0').val(shelf);
+  buttonpushed(0)();
+  execute();
+}
+else if(book != ''){ // enzan?book=漱石
+  $('#param1').val(book);
+  buttonpushed(1)();
+  execute();
+}
 
 dispcommand();
 
@@ -268,4 +295,3 @@ dispcommand();
 
 </body>
 </html>
-

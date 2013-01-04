@@ -1,6 +1,6 @@
 body  {
   background-color: white;
-  font-family: sans-serif; 
+  font-family: sans-serif;
 }
 h1     {
 	font-size: large;
@@ -9,7 +9,7 @@ h1     {
 	padding: 0 0 0 2mm;
 }
 h2   { font-size: medium; font-weight: normal; margin: 0; padding: 0 }
-.description { font-size: small; padding-left: 4mm }
+.description { /* font-size: small; */ padding-left: 4mm }
 #container  { margin: 0; padding: 0 }
 #home_header { background-image: url("../images/logo_top.jpg"); background-repeat: no-repeat; margin: 0; padding: 0; width: 100%; height: 64px }
 #hondana_org  { font-size: small; background-image: url("../images/bg_hondana_org.jpg"); background-repeat: no-repeat; margin: 0; padding: 0; width: 100% }

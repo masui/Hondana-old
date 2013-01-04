@@ -113,9 +113,6 @@ class ShelfController < ApplicationController
       newbooks
       render :action => 'newbooks'
     end
-    File.open("/tmp/log","w"){ |f|
-      f.puts @book.title
-    }
   end
 
   def write
@@ -472,8 +469,12 @@ class ShelfController < ApplicationController
   def help; getshelf; end
 
   def similar
-#    require 'enzan'
     getshelf
+    redirect_to "/enzan?similarshelf=#{@shelf.name}"
+    # redirect_to "/enzan?cmd=\"#{@shelf.name}\".shelves.similarshelves(20)"
+
+
+#    require 'enzan'
 #    @shelflist = BookList.new(@shelf.name).similar[0..9].collect { |shelf|
 #      Shelf.find(:first, :conditions => ["name = ?", shelf])
 #      # shelf

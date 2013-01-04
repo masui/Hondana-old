@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # 本棚books には、本棚名をキーとする連想配列に登録書籍リストが入っている。
 #
@@ -10,6 +11,7 @@
 #
 
 require 'digest/md5'
+require 'json/objects'
 
 $KCODE = 'UTF8'
 
@@ -200,9 +202,11 @@ class EnzanData
   end
   
   def out(n=20)
-    list[0...n].collect { |data|
-      "#{data}"
-    }.join("\n")
+    #list[0...n].collect { |data|
+    #  "#{data}"
+    #}.join("\n")
+
+    list[0...n].to_json
   end
 
   def intersection(s)
@@ -276,9 +280,16 @@ class Shelves < EnzanData
   end
 
   def out(n=20)
+    #list[0...n].collect { |shelf|
+    #  "#{@data[shelf]} <a href='#{Enzan.rooturl}/#{shelf}/'>#{shelf}</a> (#{Enzan.books(shelf).length}冊)"
+    #}.join("\n")
     list[0...n].collect { |shelf|
-      "#{@data[shelf]} <a href='#{Enzan.rooturl}/#{shelf}/'>#{shelf}</a> (#{Enzan.books(shelf).length}冊)"
-    }.join("\n")
+      data = {}
+      data['weight'] = @data[shelf]
+      data['name'] = shelf
+      data['length'] = Enzan.books(shelf).length
+      data
+    }.to_json
   end
 end
 
@@ -294,6 +305,8 @@ class Books < EnzanData
         isbn = arg
         @data[isbn] = 1
       else
+        arg.gsub!(/\(/,'\\(') # 他にもエスケープ必要な文字があるだろうが...
+        arg.gsub!(/\)/,'\\)')
         matcher = /#{arg}/i
         Enzan.bookinfo.each { |isbn,bookinfo|
           # if bookinfo['authors'].index(arg) || bookinfo['title'].index(arg) then
@@ -347,11 +360,20 @@ class Books < EnzanData
   end
 
   def out(n=20)
+#    list[0...n].collect { |isbn|
+#      shelf = Enzan.shelves(isbn)[0]
+#      title = Enzan.bookinfo(isbn)['title']
+#      "#{@data[isbn]} <a href='#{Enzan.rooturl}/#{shelf}/#{isbn}.html'>#{isbn}</a> <span onmousedown='bookbutton(\"#{isbn}\",\"#{title}\")'>#{title}</span> (#{Enzan.bookinfo(isbn)['authors']})"
+#    }.join("\n")
     list[0...n].collect { |isbn|
-      shelf = Enzan.shelves(isbn)[0]
-      title = Enzan.bookinfo(isbn)['title']
-      "#{@data[isbn]} <a href='#{Enzan.rooturl}/#{shelf}/#{isbn}.html'>#{isbn}</a> <span onmousedown='bookbutton(\"#{isbn}\",\"#{title}\")'>#{title}</span> (#{Enzan.bookinfo(isbn)['authors']})"
-    }.join("\n")
+      data = {}
+      data['weight'] = @data[isbn]
+      data['title'] = title = Enzan.bookinfo(isbn)['title']
+      data['authors'] = title = Enzan.bookinfo(isbn)['authors']
+      data['isbn'] = isbn
+      data['shelves'] = Enzan.shelves(isbn) # [0]
+      data
+    }.to_json
   end
 
   def save(name)
@@ -394,6 +416,7 @@ def data(name)
 end
 
 if __FILE__ == $0
-  Enzan.new('http://masui.sfc.keio.ac.jp/hondana2','/Users/masui/hondana2')
-  puts "増井".shelves.similarshelves.similarbooks.out
+  Enzan.new('http://hondana.org','/Users/masui/hondana')
+  # puts "増井".shelves.similarshelves.out
+  puts "yuco".shelves.books.out
 end

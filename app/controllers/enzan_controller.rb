@@ -17,7 +17,8 @@ class EnzanController < ApplicationController
   end
 
   def calculate
-    (cmd,str) = params[:cmd].split(/&/)
+    # (cmd,str) = params[:cmd].split(/&/)
+    cmd = params[:cmd]
     @res = eval(cmd).out # .split(/[\r\n]/).join("\t")
   end
 end
