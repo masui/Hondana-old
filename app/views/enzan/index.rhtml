@@ -8,11 +8,12 @@
 <title>本棚演算</title>
 <body>
 
-<h1>本棚演算 - 本棚.orgデータマイニング</h1>
+<h1>本棚演算 - <a href="http://hondana.org/">本棚.org</a>データマイニング</h1>
 
 <ul>
-<li>下のボタンで「<a href="/enzan?shelf=増井">増井の本棚 と類似する本棚10個</a>」のような演算式を生成すると右側に結果が表示されます。
+<li>下のボタンで「<a href="/enzan?similarshelf=増井">増井の本棚 と類似する本棚10個</a>」のような演算式を生成すると右側に結果が表示されます。
 <li>「重み」というのは演算実行結果の左側に表示される数字です。
+<li>重みの数字をクリックすると検索結果にもとづいて検索を継続できます。
 </ul>
 
 <div class='expression'>
@@ -53,7 +54,9 @@ function execute(){
     return;
   }
 
-  $('#result').text('計算中... 少々お待ち下さい');
+  $('#result').empty();
+  $('#result').append($('<img>').attr('src','http://sozai.7gates.net/img/icon/arrow45/arrow45-020.gif'));
+  $('#result').append($('<span>').text(' 計算中...'));
   //xmlhttp = createXmlHttp();
   var command = ""
   for(i=0;i<commandstackind;i++){
@@ -261,6 +264,8 @@ keywords = [
   'けいおん',
   '水木 しげる',
   '舞城 王太郎',
+  '漱石',
+  '鴎外',
 ];
 keyword = keywords[Math.round(keywords.length * Math.random())];
 $('#param1').val(keyword);
