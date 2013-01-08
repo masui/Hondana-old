@@ -11,7 +11,7 @@
 #
 
 require 'digest/md5'
-require 'json/objects'
+# require 'json/objects'
 
 $KCODE = 'UTF8'
 
