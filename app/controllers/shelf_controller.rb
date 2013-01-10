@@ -241,7 +241,7 @@ class ShelfController < ApplicationController
       :value => @shelf.name,
       :expires => 20.minutes.from_now,
       :path => '/',
-      :domain => 'hondana.org'
+      :domain => request.domain
     }
   end
 
@@ -535,7 +535,7 @@ class ShelfController < ApplicationController
       :value => @shelf.name,
       :expires => 5.years.from_now,
       :path => '/',
-      :domain => 'hondana.org'
+      :domain => request.domain
     }
     redirect_to :shelfname => @shelf.name, :action => 'help'
   end
@@ -546,7 +546,7 @@ class ShelfController < ApplicationController
       :value => '',
       :expires => 5.years.from_now,
       :path => '/',
-      :domain => 'hondana.org'
+      :domain => request.domain
     }
     redirect_to :shelfname => @shelf.name, :action => 'help'
   end
