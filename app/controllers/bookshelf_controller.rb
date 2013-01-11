@@ -24,6 +24,12 @@ class BookshelfController < ApplicationController
   end
 
   def list
+    cookies[:List] = {
+      :value => 'Hondana',
+      :expires => 20.minutes.from_now,
+      :path => '/',
+      :domain => request.domain
+    }
     @newentries = Entry.find(:all, :order => "modtime DESC", :limit => 10, :conditions => "NOT comment = ''") # _deletedな本棚の本も見えてしまう
     @dispshelves = Shelf.find(:all, :order => "modtime DESC", :limit => 15, :conditions => "NOT name like '%_deleted%'")
     #@rand10 = Shelf.find(:all, :order => "random()", :limit => 10, :conditions => "NOT name like '%_deleted%'")
@@ -42,7 +48,7 @@ class BookshelfController < ApplicationController
 
   def create
     shelfname = params[:shelfname]
-    if shelfname == '' || shelfname.index('<') || shelfname =~ /%3c/i then
+    if shelfname == '' || shelfname.index('<') || shelfname =~ /%3c/i || cookies[:List] != 'Hondana' then
       redirect_to :action => 'list'
     else
       @shelf = Shelf.find(:first, :conditions => ["name = ?", shelfname])
