@@ -3,5 +3,15 @@
 # To ban all spiders from the entire site uncomment the next two lines:
 # User-Agent: *
 # Disallow: /
+User-Agent: Googlebot
+Disallow: /
+
+User-Agent: bingbot
+Disallow: /
+
+User-Agent: baiduspider
+Disallow: /
+
+User-Agent: *
 Disallow /*/rename
 

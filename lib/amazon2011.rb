@@ -54,6 +54,8 @@ class MyAmazon
           "Version=2009-06-01",
           "Operation=ItemLookup",
           "ResponseGroup=Small",
+          # "ResponseGroup=Large",
+          # "ResponseGroup=EditorialReview",
           "Timestamp=#{CGI.escape(Time.now.getutc.iso8601)}",
           "ItemId=#{isbn}"
         ]
@@ -63,7 +65,12 @@ class MyAmazon
         signature = Base64.encode64(hash).split.join
         req.push("Signature=#{CGI.escape(signature)}")
         path = "/onca/xml?" + req.join('&')
-        body = Net::HTTP.get(@@aws_host , path ) 
+        body = Net::HTTP.get(@@aws_host , path) 
+
+        #File.open("/tmp/log","w"){ |f|
+        # f.puts body
+        #}
+
         doc = REXML::Document.new(body)
         doc.elements.each("ItemLookupResponse/Items/Item/ItemAttributes/Title") { |element| 
           @product[isbn]['title'] = element.text.to_s

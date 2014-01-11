@@ -13,6 +13,9 @@
 require 'digest/md5'
 # require 'json/objects'
 
+require 'rubygems'
+require 'json'
+
 $KCODE = 'UTF8'
 
 class Enzan
@@ -416,7 +419,7 @@ def data(name)
 end
 
 if __FILE__ == $0
-  Enzan.new('http://hondana.org','/Users/masui/hondana')
+  Enzan.new('http://hondana.org','/home/masui/hondana')
   # puts "増井".shelves.similarshelves.out
   puts "yuco".shelves.books.out
 end
