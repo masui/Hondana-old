@@ -1,0 +1,94 @@
+# -*- coding: utf-8 -*-
+# -*- ruby -*-
+#
+# marshal_shelfbooks で作ったファイルを変換
+#
+# data['増井'] = ['4123456789', '4234567890']
+# data['yuco'] = ['4123456789', '4345678901']
+# ...
+#
+
+data = Marshal.load(File.read('marshal.shelfbooks'))
+
+shelfnames = data.keys.sort
+shelf_ind = {}
+shelfnames.each_with_index { |shelfname,ind|
+  shelf_ind[shelfname] = ind
+}
+
+isbn_shelves = {}
+all_isbns = {}
+data.each { |shelfname,isbns|
+  isbns.each { |isbn|
+    isbn_shelves[isbn] = {} unless isbn_shelves[isbn]
+    isbn_shelves[isbn][shelf_ind[shelfname]] = 1
+    all_isbns[isbn] = 1
+  }
+}
+isbn_shelves.each { |isbn,shelves|
+  isbn_shelves[isbn] = shelves.keys.sort
+}
+
+isbns = all_isbns.keys.sort
+isbn_ind = {}
+isbns.each_with_index { |isbn,ind|
+  isbn_ind[isbn] = ind
+}
+
+puts "//////////////////////////////////////////////////////////////////"
+
+# puts "#include <stdio.h>"
+
+puts "int nshelves = #{shelfnames.length};"
+puts "char *shelfnames[] = {"
+shelfnames.each { |shelfname|
+  shelfname = shelfname.gsub(/"/,'\\"')
+  puts "  \"#{shelfname}\","
+}
+puts "};"
+
+puts "int nbooks = #{isbns.length};"
+puts "char *isbns[] = {"
+isbns.each { |isbn|
+  puts "  \"#{isbn}\","
+}
+puts "};"
+
+puts "//////////////////////////////////////////////////////////////////"
+
+shelfnames.each_with_index { |shelfname,ind|
+  STDERR.puts "shelf #{ind}" if ind % 100 == 0
+  puts "int shelf_books_#{ind}[] = {"
+  data[shelfname].sort.each { |isbn|
+    puts "  #{isbn_ind[isbn]},"
+  }
+  puts "  -1"
+  puts "};"
+}
+
+puts "int *shelf_books[] = {"
+shelfnames.each_with_index { |shelfname,ind|
+  puts "  shelf_books_#{ind},"
+}
+puts "  NULL"
+puts "};"
+
+puts "//////////////////////////////////////////////////////////////////"
+
+isbns.each_with_index { |isbn,ind|
+  STDERR.puts "isbn #{ind}" if ind % 100 == 0
+  puts "int book_shelves_#{ind}[] = {"
+  # isbn_shelves[isbn].keys.sort.each { |shelfid|
+  isbn_shelves[isbn].each { |shelfid|
+    puts "  #{shelfid},"
+  }
+  puts "  -1"
+  puts "};"
+}
+
+puts "int *book_shelves[] = {"
+isbns.each_with_index { |isbn,ind|
+  puts "  book_shelves_#{ind},"
+}
+puts "  NULL"
+puts "};"
