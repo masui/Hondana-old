@@ -40,7 +40,7 @@ puts "//////////////////////////////////////////////////////////////////"
 # puts "#include <stdio.h>"
 
 puts "int nshelves = #{shelfnames.length};"
-puts "char *shelfnames[] = {"
+puts "char *shelves[] = {"
 shelfnames.each { |shelfname|
   shelfname = shelfname.gsub(/"/,'\\"')
   puts "  \"#{shelfname}\","
