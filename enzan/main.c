@@ -3,7 +3,6 @@
 #include <stdlib.h>
 
 #include "data.h"
-#include "freqlist.h"
 
 int _search(char *a[], char *s, int start, int end){
 	if(end-start <= 1){
@@ -71,14 +70,19 @@ int main()
 	printf("%d\n",search(shelves,"asdfasdfxxx"));
 	*/
 
+	/*
 	int bakaind = isbn_ind("4106100037");
-	int *bakashelves = book_shelves[bakaind];
-	FreqList *bakafl = make_freqlist(bakashelves);
-	//dump_freqlist(bakafl);
+	FreqList *bakafl = book_shelves[bakaind];
+	*/
 
+	/*
+	//FreqList *bakafl = make_freqlist(bakashelves);
+	dump_freqlist(bakashelves);
+	*/
+
+	/*
 	int webind = isbn_ind("4480062858");
-	int *webshelves = book_shelves[webind];
-	FreqList *webfl = make_freqlist(webshelves);
+	FreqList *webfl = book_shelves[webind];
 
 	FreqList *ufl = join(webfl,bakafl);
 
@@ -88,5 +92,10 @@ int main()
 	}
 
 	printf("%d\n",intersection_count(bakafl,webfl));
+	*/
+
+	int masuiind = shelf_ind("増井");
+	dump_freqlist(shelf_books[masuiind]);
+	printf("%d\n",masuiind);
 }
 

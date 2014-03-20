@@ -39,6 +39,7 @@ puts "//////////////////////////////////////////////////////////////////"
 
 puts "#include <stdio.h>"
 puts "#include <stdlib.h>"
+puts "#include \"freqlist.h\""
 
 puts "int nshelves = #{shelfnames.length};"
 puts "char *shelves[] = {"
@@ -61,17 +62,17 @@ puts "//////////////////////////////////////////////////////////////////"
 
 shelfnames.each_with_index { |shelfname,ind|
   STDERR.puts "shelf #{ind}" if ind % 100 == 0
-  puts "int shelf_books_#{ind}[] = {"
+  puts "FreqList shelf_books_#{ind} = {"
   data[shelfname].sort.each { |isbn|
-    puts "  #{isbn_ind[isbn]},"
+    puts "  {#{isbn_ind[isbn]}, 1},"
   }
-  puts "  -1"
+  puts "  {-1, 0}"
   puts "};"
 }
 
-puts "int *shelf_books[] = {"
+puts "FreqList *shelf_books[] = {"
 shelfnames.each_with_index { |shelfname,ind|
-  puts "  shelf_books_#{ind},"
+  puts "  &shelf_books_#{ind},"
 }
 puts "  NULL"
 puts "};"
@@ -80,18 +81,18 @@ puts "//////////////////////////////////////////////////////////////////"
 
 isbns.each_with_index { |isbn,ind|
   STDERR.puts "isbn #{ind}" if ind % 100 == 0
-  puts "int book_shelves_#{ind}[] = {"
+  puts "FreqList book_shelves_#{ind} = {"
   # isbn_shelves[isbn].keys.sort.each { |shelfid|
   isbn_shelves[isbn].each { |shelfid|
-    puts "  #{shelfid},"
+    puts "  {#{shelfid}, 1},"
   }
-  puts "  -1"
+  puts "  {-1, 0}"
   puts "};"
 }
 
-puts "int *book_shelves[] = {"
+puts "FreqList *book_shelves[] = {"
 isbns.each_with_index { |isbn,ind|
-  puts "  book_shelves_#{ind},"
+  puts "  &book_shelves_#{ind},"
 }
 puts "  NULL"
 puts "};"

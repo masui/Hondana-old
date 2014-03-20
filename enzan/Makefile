@@ -7,3 +7,7 @@ main: main.o data.o freqlist.o
 
 data.c: marshal2c marshal.shelfbooks
 	ruby marshal2c > data.c
+data.o: data.c data.h
+freqlist.o: freqlist.c freqlist.h
+
+
