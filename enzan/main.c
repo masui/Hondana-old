@@ -1,14 +1,9 @@
 #include <stdio.h>
+#include <string.h>
 #include "data.h"
 
-int search(char *a[], char *s){
-	int len;
-	for(len=0;a[len];len++);
-	return _search(a,s,0,len);
-}
-
 int _search(char *a[], char *s, int start, int end){
-	if(end - start <= 1){
+	if(end-start <= 1){
 		return strcmp(s,a[start]) == 0 ? start : -1;
 	}
 	else {
@@ -20,7 +15,13 @@ int _search(char *a[], char *s, int start, int end){
 	}
 }
 
-main()
+int search(char *a[], char *s){
+	int len;
+	for(len=0;a[len];len++);
+	return _search(a,s,0,len);
+}
+
+int main()
 {
 	int i,j;
 	/*
