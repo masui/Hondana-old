@@ -37,7 +37,8 @@ isbns.each_with_index { |isbn,ind|
 
 puts "//////////////////////////////////////////////////////////////////"
 
-# puts "#include <stdio.h>"
+puts "#include <stdio.h>"
+puts "#include <stdlib.h>"
 
 puts "int nshelves = #{shelfnames.length};"
 puts "char *shelves[] = {"
@@ -45,6 +46,7 @@ shelfnames.each { |shelfname|
   shelfname = shelfname.gsub(/"/,'\\"')
   puts "  \"#{shelfname}\","
 }
+puts "  NULL"
 puts "};"
 
 puts "int nbooks = #{isbns.length};"
@@ -52,6 +54,7 @@ puts "char *isbns[] = {"
 isbns.each { |isbn|
   puts "  \"#{isbn}\","
 }
+puts "  NULL"
 puts "};"
 
 puts "//////////////////////////////////////////////////////////////////"

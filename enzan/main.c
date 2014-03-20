@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+
 #include "data.h"
+#include "freqlist.h"
 
 int _search(char *a[], char *s, int start, int end){
 	if(end-start <= 1){
@@ -19,6 +22,14 @@ int search(char *a[], char *s){
 	int len;
 	for(len=0;a[len];len++);
 	return _search(a,s,0,len);
+}
+
+int isbn_ind(char *isbn){
+	return search(isbns,isbn);
+}
+
+int shelf_ind(char *shelfname){
+	return search(shelves,shelfname);
 }
 
 int main()
@@ -51,10 +62,31 @@ int main()
 		printf("%s\n",shelfnames[shelfinds[j]]);
 	}
 	*/
+
+	/*
 	printf("%d\n",search(isbns,"4106100037"));
 	printf("%s\n",isbns[search(isbns,"4106100037")]);
 	printf("%d\n",search(shelves,"増井"));
 	printf("%s\n",shelves[search(shelves,"増井")]);
 	printf("%d\n",search(shelves,"asdfasdfxxx"));
+	*/
+
+	int bakaind = isbn_ind("4106100037");
+	int *bakashelves = book_shelves[bakaind];
+	FreqList *bakafl = make_freqlist(bakashelves);
+	//dump_freqlist(bakafl);
+
+	int webind = isbn_ind("4480062858");
+	int *webshelves = book_shelves[webind];
+	FreqList *webfl = make_freqlist(webshelves);
+
+	FreqList *ufl = join(webfl,bakafl);
+
+	for(i=0;(*ufl)[i][0]>0;i++){
+		int ind = (*ufl)[i][0];
+		printf("%s %d\n",shelves[ind],(*ufl)[i][1]);
+	}
+
+	printf("%d\n",intersection_count(bakafl,webfl));
 }
 
