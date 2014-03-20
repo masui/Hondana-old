@@ -94,8 +94,23 @@ int main()
 	printf("%d\n",intersection_count(bakafl,webfl));
 	*/
 
+	/*
 	int masuiind = shelf_ind("増井");
-	dump_freqlist(shelf_books[masuiind]);
-	printf("%d\n",masuiind);
+	FreqList *masuifl = shelf_books[masuiind];
+	for(i=0;i<fl_length(masuifl);i++){
+		int ind = (*masuifl)[i][0];
+		int freq = (*masuifl)[i][1];
+		printf("%s %d\n",isbns[ind],freq);
+	}
+	*/
+
+	int masuiind = shelf_ind("増井");
+	FreqList *masuifl = shelf_books[masuiind];
+
+	for(i=0;i<nshelves;i++){
+		FreqList *fl = shelf_books[i];
+		printf("%d - %s\n",intersection_count(masuifl,fl),shelves[i]);
+	}
 }
+
 
