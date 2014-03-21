@@ -26,7 +26,7 @@ int fl_length(FreqList *fl){
 	return i;
 }
 
-int join_count(FreqList *a, FreqList *b){
+int fl_join_count(FreqList *a, FreqList *b){
 	int count = 0;
 	int inda = 0;
 	int indb = 0;
@@ -57,11 +57,11 @@ int join_count(FreqList *a, FreqList *b){
 	return count;
 }
 
-FreqList *join(FreqList *a, FreqList *b){
+FreqList *fl_join(FreqList *a, FreqList *b){
 	int count = 0;
 	int inda = 0;
 	int indb = 0;
-	FreqList *fl = (FreqList*)malloc(sizeof(Freq)*(join_count(a,b)+1));
+	FreqList *fl = (FreqList*)malloc(sizeof(Freq)*(fl_join_count(a,b)+1));
 	for(;;){
 		int vala = (*a)[inda][0];
 		int valb = (*b)[indb][0];
@@ -98,7 +98,7 @@ FreqList *join(FreqList *a, FreqList *b){
 	return fl;
 }
 
-int intersection_count(FreqList *a, FreqList *b){
+int fl_intersection_count(FreqList *a, FreqList *b){
 	int count = 0;
 	int inda = 0;
 	int indb = 0;
@@ -129,11 +129,11 @@ int intersection_count(FreqList *a, FreqList *b){
 	return count;
 }
 
-FreqList *intersection(FreqList *a, FreqList *b){
+FreqList *fl_intersection(FreqList *a, FreqList *b){
 	int count = 0;
 	int inda = 0;
 	int indb = 0;
-	FreqList *fl = (FreqList*)malloc(sizeof(Freq)*(intersection_count(a,b)+1));
+	FreqList *fl = (FreqList*)malloc(sizeof(Freq)*(fl_intersection_count(a,b)+1));
 	for(;;){
 		int vala = (*a)[inda][0];
 		int valb = (*b)[indb][0];
@@ -169,7 +169,7 @@ FreqList *intersection(FreqList *a, FreqList *b){
 	return fl;
 }
 
-void dump_freqlist(FreqList *fl){
+void fl_dump(FreqList *fl){
 	//for(i=0;(*fl)[i][0] >= 0;i++){
 	int i;
 	for(i=0;i<fl_length(fl);i++){
