@@ -14,22 +14,16 @@ typedef enum {
 	SEARCH, ADD, SUB, SIMILAR
 } Command;
 
-/*
-typedef struct {
-	Kind input;
-	Kind output;
-	Command command;
-	FreqList **list;
-	char *name;
-} FLArg;
-*/
 
-float *score;
+typedef struct {
+	int ind;
+	float score;
+} Entry;
 
 int compare(const void *a, const void *b)
 {
-	float aa = score[*(int*)a];
-	float bb = score[*(int*)b];
+	float aa = ((Entry*)a)->score;
+	float bb = ((Entry*)b)->score;
 	return bb > aa ? 1 : aa == bb ? 0 : -1;
 }
 
@@ -51,18 +45,17 @@ FreqList *calc(Command command, Kind inputkind, Kind outputkind, FreqList *fl)
 		if(inputkind == BOOK){
 			if(command == SIMILAR){
 				int query_books_length = fl_length(fl);
-				score = (float*)alloca(sizeof(float)*nshelves);
-				int *ind = (int*)alloca(sizeof(int)*nshelves);
+				Entry *entries = (Entry*)alloca(sizeof(Entry)*nshelves);
 				for(i=0;i<nshelves;i++){
 					FreqList *books = shelf_books[i];
 					int books_length = fl_length(books);
-					score[i] = intersection_count(fl,books)*1.0/(query_books_length+books_length);
-					ind[i] = i;
+					entries[i].score = intersection_count(fl,books)*1.0/(query_books_length+books_length);
+					entries[i].ind = i;
 					
 				}
-				qsort(ind, nshelves, sizeof(int), compare);
+				qsort(entries, nshelves, sizeof(Entry), compare);
 				for(i=0;i<10;i++){
-					printf("%d %f %s\n",ind[i],score[ind[i]],shelves[ind[i]]);
+					printf("%d %f %s\n",entries[i].ind,entries[i].score,shelves[entries[i].ind]);
 				}
 			}
 		}
@@ -110,6 +103,7 @@ FreqList *calc(FLArg arg)
 }
 */
 
+ /*
 FreqList *similar_shelves(char *shelf){
 	// shelfの本棚に近いものをリストする
 	int i;
@@ -133,6 +127,7 @@ FreqList *similar_shelves(char *shelf){
 
 	return NULL;
 }
+ */
 
 int main()
 {
@@ -231,4 +226,6 @@ int main()
 	fl = calc(SEARCH,SHELF,BOOK,&freq); // 増井の本棚の本リスト
 
 	fl = calc(SIMILAR,BOOK,SHELF,fl); // 増井の本棚の本リストに近い本棚
+
+	fl = calc(SIMILAR,BOOK,SHELF,shelf_books[shelf_ind("増井")]);
 }
