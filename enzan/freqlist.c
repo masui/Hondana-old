@@ -171,7 +171,8 @@ FreqList *intersection(FreqList *a, FreqList *b){
 
 void dump_freqlist(FreqList *fl){
 	//for(i=0;(*fl)[i][0] >= 0;i++){
-	for(int i=0;i<fl_length(fl);i++){
+	int i;
+	for(i=0;i<fl_length(fl);i++){
 		printf("freqlist[%d] = %d\n",(*fl)[i][0],(*fl)[i][1]);
 	}
 }
