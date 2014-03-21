@@ -1,5 +1,55 @@
-連想配列みたいなのが要るのだが
+*** 方針
 
-{{10,1},{20,2},{100,1}}
-  10番の本が一冊/20番の本が二冊
+- 「頻度リスト」で演算を行なう
+- どの本がどれぐらいあるか、みたいなもの
+- FreqListというデータ構造にする
+  [index, freq] という2要素配列の配列として表現
+  [[10,1],[20,2],[100,1]]
+    10番の本が1冊/20番の本が2冊
+- 本棚も同じように計算する必要あり
+  [[10,1],[20,2],[100,1]]
+    10番の本棚がひとつ/20番の本棚がふたつ
+
+- 演算例
+ - 本棚Aの本リストを取得                       FreqList *booklist =  shelf_booklist("増井");
+                                                                     booklist(FROMSHELF,"増井");
+                                                                     list(BOOKS,FROMSHELF,"増井");
+								     booklist(shelflist);
+ - 本Aの本棚リストを取得                       FreqList *shelflist = book_shelflist("4123456789");
+                                                                     shelflist(FROMBOOK,"4123456789");
+                                                                     list(SHELVES,FROMBOOK,"4123456789");
+ - 本棚Aの本リストと本棚Bの本リストを足す      FreqList *booklist = fl_add(booklist1,booklist2);
+                                                                     list(ADD,list1,list2);
+ - 本Aの本棚リストと本Bの本棚リストを足す                            list_add(list1,list2);
+                                                                     list(ADD,list1,list2);
+ - 本リストAから本リストBを引算する                                  list_sub(list1,list2);
+                                                                     list(SUB,list1,list2);
+ - 本リストに似た本棚リストを計算              FreqList *shelflist = similar(booklist);
+                                                                     shelflist(SIMILAR,booklist);
+                                                                     list(SHELVES,SIMILAR,booklist);
+								     list_similar
+
+
+- これらをCプログラムで高速実行できるが、サーバ(Ruby?)からどう呼び出せばいいか?
+ - enzan.rbの様式をそのまま解釈できればいいのだが
+
+typedef enum {
+  BOOK, SHELF
+} Kind;
+
+typedef enum {
+  ADD, SUB, SIMILAR
+} Command;
+
+typedef struct {
+  Kind kind;
+  Command command;
+  FreqList *list[];
+  char *name;
+} FLArg;
+
+FLArg arg;
+
+calc(arg);
+
 
