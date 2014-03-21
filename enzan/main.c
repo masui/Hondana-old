@@ -104,12 +104,15 @@ int main()
 	}
 	*/
 
+	// 増井の本棚に近いものをリストする
 	int masuiind = shelf_ind("増井");
 	FreqList *masuifl = shelf_books[masuiind];
 
+	int masui_length = fl_length(masuifl);
 	for(i=0;i<nshelves;i++){
 		FreqList *fl = shelf_books[i];
-		printf("%d - %s\n",intersection_count(masuifl,fl),shelves[i]);
+		int length = fl_length(fl);
+		printf("%f - %s\n",intersection_count(masuifl,fl)*1.0/(masui_length+length),shelves[i]);
 	}
 }
 

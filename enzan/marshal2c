@@ -35,11 +35,14 @@ isbns.each_with_index { |isbn,ind|
   isbn_ind[isbn] = ind
 }
 
+
 puts "//////////////////////////////////////////////////////////////////"
 
 puts "#include <stdio.h>"
 puts "#include <stdlib.h>"
 puts "#include \"freqlist.h\""
+
+#if false then
 
 puts "int nshelves = #{shelfnames.length};"
 puts "char *shelves[] = {"
@@ -96,3 +99,41 @@ isbns.each_with_index { |isbn,ind|
 }
 puts "  NULL"
 puts "};"
+
+#end
+
+#########################################################################
+#########################################################################
+
+data = Marshal.load(File.read('marshal.bookinfo'))
+
+puts "char *authors[] = {"
+isbns.each { |isbn|
+  d = data[isbn]
+  if d then
+    authors = d['authors'].gsub(/"/,'\\"')
+    puts "  \"#{authors}\","
+  else
+    puts "  \"\","
+  end
+}
+puts "  NULL"
+puts "};"
+
+puts "char *titles[] = {"
+isbns.each { |isbn|
+  d = data[isbn]
+  if d then
+    # title = d['title'].gsub(/\\/,'¥').gsub(/"/,'\\"')
+    title = d['title'].gsub(/\\/,'Y').gsub(/"/,'\\"')
+    # title = d['title'].gsub(/"/,'\\"')
+    puts "  \"#{title}\","
+  else
+    puts "  \"\","
+  end
+}
+puts "  NULL"
+puts "};"
+
+
+
