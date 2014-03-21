@@ -1,7 +1,9 @@
 //
 //
 //
+#ifndef FREQLIST_H
 #include "freqlist.h"
+#endif
 
 extern int nshelves;
 extern char *shelves[];

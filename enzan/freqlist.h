@@ -1,5 +1,7 @@
 //
 //
+#define FREQLIST_H
+
 typedef int Freq[2];
 typedef int FreqList[][2];
 
