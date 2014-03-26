@@ -85,8 +85,6 @@ int main()
 {
 	int i,j;
 
-	FreqList *fl;
-
-	fl = shelf_books("yuco");
-	fl = calc(SIMILAR,BOOK,SHELF,fl,NULL);
+	FreqList *list1 = shelf_books("yuco");                 // 'yuco' という本棚の本を取得
+	FreqList *list2 = calc(SIMILAR,BOOK,SHELF,list1,NULL); // flという本リストに似た本棚リストを取得
 }
