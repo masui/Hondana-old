@@ -1,3 +1,6 @@
+//
+// 本棚演算をCで高速化する実験
+//
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -38,7 +41,7 @@ FreqList *calc(Command command, Kind inputkind, Kind outputkind, FreqList *fl1, 
 	if(outputkind == BOOK){
 		if(inputkind == SHELF){
 			if(command == SEARCH){
-				return shelf_books[(*fl1)[0][0]];
+				return _shelf_books[(*fl1)[0][0]];
 			}
 		}
 		if(inputkind == BOOK){
@@ -53,7 +56,7 @@ FreqList *calc(Command command, Kind inputkind, Kind outputkind, FreqList *fl1, 
 				int query_books_length = fl_length(fl1);
 				Entry *entries = (Entry*)alloca(sizeof(Entry)*nshelves);
 				for(i=0;i<nshelves;i++){
-					FreqList *books = shelf_books[i];
+					FreqList *books = _shelf_books[i];
 					int books_length = fl_length(books);
 					entries[i].score = fl_intersection_count(fl1,books)*1.0/(query_books_length+books_length);
 					entries[i].ind = i;
@@ -68,31 +71,22 @@ FreqList *calc(Command command, Kind inputkind, Kind outputkind, FreqList *fl1, 
 	}
 }
 
+FreqList *shelf_books(char *shelfname)
+{
+	return _shelf_books[shelf_ind(shelfname)];
+}
+
+FreqList *book_shelves(char *isbn)
+{
+	return _book_shelves[isbn_ind(isbn)];
+}
+
 int main()
 {
 	int i,j;
 
 	FreqList *fl;
 
-	/*
-	int ind = shelf_ind("増井");
-	Freq freq[2];
-	freq[0][0] = ind;
-	freq[0][1] = 1;
-	freq[1][0] = -1;
-	fl = calc(SEARCH,SHELF,BOOK,&freq,NULL); // 増井の本棚の本リスト
-
-	fl = calc(SIMILAR,BOOK,SHELF,fl,NULL); // 増井の本棚の本リストに近い本棚
-
-	fl = shelf_books[shelf_ind("増井")];
-	fl = calc(SIMILAR,BOOK,SHELF,fl,NULL);
-	*/
-	/*
-	FreqList *fl1 = shelf_books[shelf_ind("増井")];
-	FreqList *fl2 = shelf_books[shelf_ind("yuco")];
-	FreqList *fl3 = calc(ADD,BOOK,BOOK,fl1,fl2);
-	fl_dump(fl3);
-	*/
-	fl = shelf_books[shelf_ind("yuco")];
+	fl = shelf_books("yuco");
 	fl = calc(SIMILAR,BOOK,SHELF,fl,NULL);
 }

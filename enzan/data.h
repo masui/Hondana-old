@@ -11,5 +11,5 @@ extern char *shelves[];
 extern int nbooks;
 extern char *isbns[];
 
-extern FreqList *shelf_books[];
-extern FreqList *book_shelves[];
+extern FreqList *_shelf_books[];
+extern FreqList *_book_shelves[];

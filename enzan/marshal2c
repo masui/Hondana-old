@@ -65,7 +65,7 @@ puts "//////////////////////////////////////////////////////////////////"
 
 shelfnames.each_with_index { |shelfname,ind|
   STDERR.puts "shelf #{ind}" if ind % 100 == 0
-  puts "FreqList shelf_books_#{ind} = {"
+  puts "FreqList _shelf_books_#{ind} = {"
   data[shelfname].sort.each { |isbn|
     puts "  {#{isbn_ind[isbn]}, 1},"
   }
@@ -73,9 +73,9 @@ shelfnames.each_with_index { |shelfname,ind|
   puts "};"
 }
 
-puts "FreqList *shelf_books[] = {"
+puts "FreqList *_shelf_books[] = {"
 shelfnames.each_with_index { |shelfname,ind|
-  puts "  &shelf_books_#{ind},"
+  puts "  &_shelf_books_#{ind},"
 }
 puts "  NULL"
 puts "};"
@@ -84,7 +84,7 @@ puts "//////////////////////////////////////////////////////////////////"
 
 isbns.each_with_index { |isbn,ind|
   STDERR.puts "isbn #{ind}" if ind % 100 == 0
-  puts "FreqList book_shelves_#{ind} = {"
+  puts "FreqList _book_shelves_#{ind} = {"
   # isbn_shelves[isbn].keys.sort.each { |shelfid|
   isbn_shelves[isbn].each { |shelfid|
     puts "  {#{shelfid}, 1},"
@@ -93,9 +93,9 @@ isbns.each_with_index { |isbn,ind|
   puts "};"
 }
 
-puts "FreqList *book_shelves[] = {"
+puts "FreqList *_book_shelves[] = {"
 isbns.each_with_index { |isbn,ind|
-  puts "  &book_shelves_#{ind},"
+  puts "  &_book_shelves_#{ind},"
 }
 puts "  NULL"
 puts "};"
