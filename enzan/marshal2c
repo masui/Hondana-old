@@ -45,7 +45,7 @@ puts "#include \"freqlist.h\""
 #if false then
 
 puts "int nshelves = #{shelfnames.length};"
-puts "char *shelves[] = {"
+puts "char *_shelves[] = {"
 shelfnames.each { |shelfname|
   shelfname = shelfname.gsub(/"/,'\\"')
   puts "  \"#{shelfname}\","
@@ -54,7 +54,7 @@ puts "  NULL"
 puts "};"
 
 puts "int nbooks = #{isbns.length};"
-puts "char *isbns[] = {"
+puts "char *_isbns[] = {"
 isbns.each { |isbn|
   puts "  \"#{isbn}\","
 }

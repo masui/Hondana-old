@@ -27,9 +27,9 @@ static int search(char *a[], char *s){
 }
 
 int isbn_ind(char *isbn){
-	return search(isbns,isbn);
+	return search(_isbns,isbn);
 }
 
 int shelf_ind(char *shelfname){
-	return search(shelves,shelfname);
+	return search(_shelves,shelfname);
 }

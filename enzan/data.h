@@ -6,10 +6,10 @@
 #endif
 
 extern int nshelves;
-extern char *shelves[];
+extern char *_shelves[];
 
 extern int nbooks;
-extern char *isbns[];
+extern char *_isbns[];
 
 extern FreqList *_shelf_books[];
 extern FreqList *_book_shelves[];
