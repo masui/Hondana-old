@@ -1,7 +1,9 @@
 CFLAGS = -I/usr/local/include/CUnit
 LIBS = /usr/local/lib/libcunit.a
 
-all:
+all: test
+
+allx:
 	ruby marshal_shelfbooks > marshal.shelfbooks
 	ruby marshal_bookinfo > marshal.bookinfo
 

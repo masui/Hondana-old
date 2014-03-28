@@ -26,9 +26,9 @@ class Enzan
   # 初期化にかなり時間がかかるのをなんとかしたいものだが...
   def initialize(rootdir="/Users/masui/Hondana")
     # #{rootdir}/enzan の下にmarshal.bookinfoとmarshal.shelfbooksというMarshalファイルがある
-    @@rootdir = rootdir
     if !@@initialized then
       @@initialized = true
+      @@rootdir = rootdir
       File.open("#{@@rootdir}/enzan/marshal.bookinfo"){ |f|
         data = Marshal.load(f)
         # data['0123456789'] = { title:'タイトル', authors:'著者', isbn:'1234567890' }
@@ -50,7 +50,7 @@ class Enzan
           @@shelf_books[shelf.dup.force_encoding("UTF-8")] = isbns
         }
       }
-      # 何故かbookinfoが空のことがあるので、そういうエントリを除く
+      # bookinfoが空のエントリを除く
       @@shelf_books.each { |shelf,books|
         delbooks = []
         books.each { |book|
@@ -87,24 +87,24 @@ class Enzan
     end
   end
 
+  # 本棚番号から本棚名を得る
   def Enzan.ind_shelfname(ind)
     @@ind_shelfname[ind]
   end
 
+  # 本番号からISBNを得る
   def Enzan.ind_isbn(ind)
     @@ind_isbn[ind]
   end
 
+  # 本棚名から本棚番号を得る
   def Enzan.shelfname_ind(shelfname)
     @@shelfname_ind[shelfname]
   end
 
+  # ISBNから本番号を得る
   def Enzan.isbn_ind(isbn)
     @@isbn_ind[isbn]
-  end
-
-  def Enzan.rootdir
-    @@rootdir
   end
 
   def Enzan.bookinfo(isbn=nil)
@@ -115,26 +115,12 @@ class Enzan
     end
   end
 
-  def Enzan.books(shelf=nil)
-    res = @@shelf_books[shelf]
-    res.nil? ? [] : res
+  def Enzan.shelf_books(shelf)
+    @@shelf_books[shelf].to_a
   end
 
-  def Enzan.collect_books
-    @@book_shelves.collect { |book,shelves|
-      yield book,shelves
-    }
-  end
-
-  def Enzan.shelves(book=nil)
-    res = @@book_shelves[book]
-    res.nil? ? [] : res
-  end
-
-  def Enzan.collect_shelves
-    @@shelf_books.collect { |shelf,books|
-      yield shelf,books
-    }
+  def Enzan.book_shelves(isbn)
+    @@book_shelves[isbn].to_a # nil => []
   end
 end
 
@@ -217,13 +203,14 @@ class Shelves < EnzanData
     # Shelves.new({'増井' => 2, '4912345678' => 3})
     super(*args)
     if args[0].class == Hash then
+      # 第1引数がHashの場合はデータを直接わたす
       @data = args[0]
     else
       @data = {}
       args.each { |arg|
         if arg =~ /^\d{9}[\dX]/ then
           isbn = arg
-          Enzan.shelves(isbn).each { |shelfname|
+          Enzan.book_shelves(isbn).each { |shelfname|
             @data[shelfname] = 1
           }
         else
@@ -238,16 +225,16 @@ class Shelves < EnzanData
   def books
     b = Books.new
     @data.keys.each { |shelf|
-      b.add(Enzan.books(shelf))
+      b.add(Enzan.shelf_books(shelf))
     }
     b
   end
 
   # 本棚(リスト)に近い本棚を得る
   def similarshelves
-    a = rbdata2cdata(SHELF)
-    res = Enzan.calc(SIMILAR,SHELF,SHELF,a,nil)
-    shelves = cdata2rbdata(res,SHELF)
+    a = rbdata2cdata(SHELF)                     # @dataを2次元配列に変換
+    res = Enzan.calc(SIMILAR,SHELF,SHELF,a,nil) # C関数呼び出し
+    shelves = cdata2rbdata(res,SHELF)           # 2次元配列をハッシュに戻す
     Shelves.new(shelves)
   end
 
@@ -289,8 +276,35 @@ class Books < EnzanData
     end
   end
 
+  # 本(リスト)にが登録されている本棚のリストを得る
+  def shelves
+    s = Shelves.new
+    @data.keys.each { |book|
+      s.add(Enzan.book_shelves(book))
+    }
+    s
+  end
+
+  # 本(リスト)に近い本を得る
+  def similarbooks
+    a = rbdata2cdata(BOOK)                     # @dataを2次元配列に変換
+    res = Enzan.calc(SIMILAR,BOOK,BOOK,a,nil)  # C関数呼び出し
+    books = cdata2rbdata(res,BOOK)             # 2次元配列をハッシュに戻す
+    Books.new(books)
+  end
+
+  # 本(リスト)に近い本棚を得る
+  def similarshelves
+    a = rbdata2cdata(BOOK)
+    res = Enzan.calc(SIMILAR,BOOK,SHELF,a,nil)
+    shelves = cdata2rbdata(res,SHELF)
+    Shelves.new(shelves)
+  end
 end
 
+#
+# テスト
+#
 if __FILE__ == $0 then
   require 'test/unit'
 
@@ -332,12 +346,72 @@ if __FILE__ == $0 then
       }
     end
 
+    def test_shelf_books2
+      # 「増井の本棚」に「ウェブ進化論」はあるか?
+      s = Shelves.new('増井')
+      b = s.books
+      found = nil
+      b.each { |key,val|
+        found = true if key == '4480062858' # ウェブ進化論
+      }
+      assert found
+      # 「情報視覚化の本棚」に「ウェブ進化論」はあるか?
+      s = Shelves.new('情報視覚化')
+      b = s.books
+      found = nil
+      b.each { |key,val|
+        found = true if key == '4480062858' # ウェブ進化論
+      }
+      assert !found
+    end
+
     def test_shelf_similar
       s = Shelves.new('増井研')
       ss = s.similarshelves
       assert ss.class == Shelves
       assert ss.length > 0
     end
+
+    def test_book_class
+      b = Books.new('4480062858') # ウェブ進化論
+      #b = Books.new('4106100037') # バカの壁
+      assert b.class == Books
+      assert b.data.class == Hash
+      assert b.data.length > 0
+    end
+    
+    def test_book_shelves
+      b = Books.new('4480062858') # ウェブ進化論
+      #b = Books.new('4106100037') # バカの壁
+      s = b.shelves
+      assert s.class == Shelves
+      assert s.length > 30
+      s.each { |key,val|
+        assert key.class == String
+        assert key.length > 0
+        assert val.to_i > 0
+      }
+    end
+
+    def test_book_shelves2
+      # 「ウェブ進化論」の本棚リストに「増井の本棚」はあるか?
+      b = Books.new('4480062858') # ウェブ進化論
+      s = b.shelves
+      found = false
+      s.each { |key,val|
+        found = true if key == '増井'
+      }
+      assert found
+    end
+
+    def test_book_similar
+      b = Books.new('4480062858') # ウェブ進化論
+      bb = b.similarbooks
+      assert bb.class == Books
+      assert bb.length > 0
+    end
+
+# bookinfoもテストしたい
   end
 end
 
