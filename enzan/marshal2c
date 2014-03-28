@@ -2,15 +2,24 @@
 # -*- ruby -*-
 #
 # marshal_shelfbooks で作ったファイルを変換
+# - marshal_shelfbooksの構造
+#   data['増井'] = ['4123456789', '4234567890']
+#   data['yuco'] = ['4123456789', '4345678901']
+#   ...
 #
-# data['増井'] = ['4123456789', '4234567890']
-# data['yuco'] = ['4123456789', '4345678901']
-# ...
+# - 実際の本棚名やISBNはRuby側で管理する
+#  - Cのデータでは持たないことにする
+# - Freqだけ生成
+# 
 #
 
 data = Marshal.load(File.read('marshal.shelfbooks'))
+bookinfo = Marshal.load(File.read('marshal.bookinfo'))
 
-shelfnames = data.keys.sort
+shelfnames = data.keys.collect { |shelfname|
+  shelfname.dup.force_encoding("UTF-8")
+}.sort
+
 shelf_ind = {}
 shelfnames.each_with_index { |shelfname,ind|
   shelf_ind[shelfname] = ind
@@ -19,9 +28,12 @@ shelfnames.each_with_index { |shelfname,ind|
 isbn_shelves = {}
 all_isbns = {}
 data.each { |shelfname,isbns|
+  s = shelfname.dup
+  s.force_encoding("UTF-8")
   isbns.each { |isbn|
+    next unless bookinfo[isbn] # bookinfoが空のことがあるので
     isbn_shelves[isbn] = {} unless isbn_shelves[isbn]
-    isbn_shelves[isbn][shelf_ind[shelfname]] = 1
+    isbn_shelves[isbn][shelf_ind[s]] = 1
     all_isbns[isbn] = 1
   }
 }
@@ -35,47 +47,34 @@ isbns.each_with_index { |isbn,ind|
   isbn_ind[isbn] = ind
 }
 
-
 puts "//////////////////////////////////////////////////////////////////"
 
 puts "#include <stdio.h>"
 puts "#include <stdlib.h>"
-puts "#include \"freqlist.h\""
-
-#if false then
+puts "#include \"freq.h\""
+puts "#include \"data.h\""
 
 puts "int nshelves = #{shelfnames.length};"
-puts "char *_shelves[] = {"
-shelfnames.each { |shelfname|
-  shelfname = shelfname.gsub(/"/,'\\"')
-  puts "  \"#{shelfname}\","
-}
-puts "  NULL"
-puts "};"
-
 puts "int nbooks = #{isbns.length};"
-puts "char *_isbns[] = {"
-isbns.each { |isbn|
-  puts "  \"#{isbn}\","
-}
-puts "  NULL"
-puts "};"
 
 puts "//////////////////////////////////////////////////////////////////"
 
 shelfnames.each_with_index { |shelfname,ind|
   STDERR.puts "shelf #{ind}" if ind % 100 == 0
-  puts "FreqList _shelf_books_#{ind} = {"
-  data[shelfname].sort.each { |isbn|
+  puts "struct Freq _shelf_books_#{ind}[] = {"
+  s = shelfname.dup
+  s.force_encoding("ASCII-8BIT")
+  data[s].sort.each { |isbn|
+    next unless bookinfo[isbn] # bookinfoが空のことがあるので
     puts "  {#{isbn_ind[isbn]}, 1},"
   }
   puts "  {-1, 0}"
   puts "};"
 }
 
-puts "FreqList *_shelf_books[] = {"
+puts "struct Freq *_shelf_books[] = {"
 shelfnames.each_with_index { |shelfname,ind|
-  puts "  &_shelf_books_#{ind},"
+  puts "  _shelf_books_#{ind},"
 }
 puts "  NULL"
 puts "};"
@@ -84,7 +83,7 @@ puts "//////////////////////////////////////////////////////////////////"
 
 isbns.each_with_index { |isbn,ind|
   STDERR.puts "isbn #{ind}" if ind % 100 == 0
-  puts "FreqList _book_shelves_#{ind} = {"
+  puts "struct Freq _book_shelves_#{ind}[] = {"
   # isbn_shelves[isbn].keys.sort.each { |shelfid|
   isbn_shelves[isbn].each { |shelfid|
     puts "  {#{shelfid}, 1},"
@@ -93,47 +92,11 @@ isbns.each_with_index { |isbn,ind|
   puts "};"
 }
 
-puts "FreqList *_book_shelves[] = {"
+puts "struct Freq *_book_shelves[] = {"
 isbns.each_with_index { |isbn,ind|
-  puts "  &_book_shelves_#{ind},"
+  puts "  _book_shelves_#{ind},"
 }
 puts "  NULL"
 puts "};"
-
-#end
-
-#########################################################################
-#########################################################################
-
-data = Marshal.load(File.read('marshal.bookinfo'))
-
-puts "char *authors[] = {"
-isbns.each { |isbn|
-  d = data[isbn]
-  if d then
-    authors = d['authors'].gsub(/"/,'\\"')
-    puts "  \"#{authors}\","
-  else
-    puts "  \"\","
-  end
-}
-puts "  NULL"
-puts "};"
-
-puts "char *titles[] = {"
-isbns.each { |isbn|
-  d = data[isbn]
-  if d then
-    # title = d['title'].gsub(/\\/,'¥').gsub(/"/,'\\"')
-    title = d['title'].gsub(/\\/,'Y').gsub(/"/,'\\"')
-    # title = d['title'].gsub(/"/,'\\"')
-    puts "  \"#{title}\","
-  else
-    puts "  \"\","
-  end
-}
-puts "  NULL"
-puts "};"
-
 
 

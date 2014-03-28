@@ -1,3 +1,4 @@
+// †
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -26,10 +27,10 @@ static int search(char *a[], char *s){
 	return _search(a,s,0,len);
 }
 
-int isbn_ind(char *isbn){
-	return search(_isbns,isbn);
-}
-
-int shelf_ind(char *shelfname){
-	return search(_shelves,shelfname);
-}
+// int isbn_ind(char *isbn){
+// 	return search(_isbns,isbn);
+// }
+// 
+// int shelf_ind(char *shelfname){
+// 	return search(_shelves,shelfname);
+// }

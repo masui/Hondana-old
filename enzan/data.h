@@ -1,15 +1,18 @@
 //
 //
 //
-#ifndef FREQLIST_H
-#include "freqlist.h"
-#endif
+#ifndef DATA_H
+#define DATA_H
+
+#include "freq.h"
 
 extern int nshelves;
-extern char *_shelves[];
+//extern char *_shelves[];
 
 extern int nbooks;
-extern char *_isbns[];
+//extern char *_isbns[];
 
-extern FreqList *_shelf_books[];
-extern FreqList *_book_shelves[];
+extern struct Freq *_shelf_books[];
+extern struct Freq *_book_shelves[];
+
+#endif
