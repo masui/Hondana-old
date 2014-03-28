@@ -21,5 +21,8 @@ libfoo.so: foo.o
 foo.o: foo.c
 	cc -c foo.c
 
+test:
+	ruby enzan.rb
+
 
 

@@ -23,6 +23,7 @@ class Enzan
 
   @@initialized = false
 
+  # 初期化にかなり時間がかかるのをなんとかしたいものだが...
   def initialize(rootdir="/Users/masui/Hondana")
     # #{rootdir}/enzan の下にmarshal.bookinfoとmarshal.shelfbooksというMarshalファイルがある
     @@rootdir = rootdir
