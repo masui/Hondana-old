@@ -83,7 +83,6 @@ class Enzan
       @@ind_shelfname.each_with_index { |shelfname,ind|
         @@shelfname_ind[shelfname] = ind
       }
-      puts "--------------Init end"
     end
   end
 
@@ -139,14 +138,24 @@ class Enzan
 end
 
 class EnzanData
+  include Enumerable
   def initialize(*args)
     Enzan.new
     @data = {}
   end
 
   def data
-    puts "______________"
     @data
+  end
+
+  def each
+    @data.each { |key,val|
+      yield key, val
+    }
+  end
+
+  def length
+    @data.length
   end
 
   def add(newdata)
@@ -192,7 +201,7 @@ class EnzanData
       break if f[:index] < 0
       ind = f[:index]
       n = (type == BOOK ? Enzan.ind_isbn(ind) : Enzan.ind_shelfname(ind))
-      puts "#{ind} => #{n}"
+      # puts "#{ind} => #{n}"
       data[n] = f[:freq]
       # data[name(f[:index])] = f[:freq]
       i += 1
@@ -281,172 +290,76 @@ class Books < EnzanData
 
 end
 
-# # s = Shelves.new('増井','4569534074')
-s = Shelves.new('増井研')
-ss = s.similarshelves
-p ss
-exit
+if __FILE__ == $0 then
+  require 'test/unit'
 
-# books = Books.new('街角')
+  class EnzanTest < Test::Unit::TestCase
+    def setup
+      Enzan.new
+    end
+    
+    def teardown
+    end
 
-# s = Shelves.new('増井','suchi')
-s = Shelves.new('yuco')
-books = s.similarbooks
-# books = s.books
-p books
-p books.class
-p books.data.class
-puts "-----"
-books.data.each { |isbn,freq|
-  puts Enzan.bookinfo[isbn]
-}
+    def test_enzan1
+      (0..100).each { |ind|
+        shelfname = Enzan.ind_shelfname(ind)
+        assert ind == Enzan.shelfname_ind(shelfname)
+      }
+      (0..100).each { |ind|
+        isbn = Enzan.ind_isbn(ind)
+        assert isbn.length == 10
+        assert ind == Enzan.isbn_ind(isbn)
+      }
+    end
 
-# s = Shelves.new('4569534074')
-# p s
-exit
+    def test_shelf_class
+      s = Shelves.new('増井')
+      assert s.class == Shelves
+      assert s.data.class == Hash
+      assert s.data.length > 0
+    end
+    
+    def test_shelf_books
+      s = Shelves.new('増井')
+      b = s.books
+      assert b.class == Books
+      assert b.length > 3000
+      b.each { |key,val|
+        assert key.length == 10
+        assert val.to_i > 0
+      }
+    end
 
-# 
-# 
-# data = Marshal.load(File.read('marshal.shelfbooks'))
-# 
-# shelfnames = data.keys.collect { |shelfname|
-#   shelfname.dup.force_encoding("UTF-8")
-# }.sort
-# 
-# shelf_ind = {}
-# shelfnames.each_with_index { |shelfname,ind|
-#   shelf_ind[shelfname] = ind
-# }
-# 
-# isbn_shelves = {}
-# all_isbns = {}
-# data.each { |shelfname,isbns|
-#   s = shelfname.dup
-#   s.force_encoding("UTF-8")
-#   isbns.each { |isbn|
-#     isbn_shelves[isbn] = {} unless isbn_shelves[isbn]
-#     isbn_shelves[isbn][shelf_ind[s]] = 1
-#     all_isbns[isbn] = 1
-#   }
-# }
-# isbn_shelves.each { |isbn,shelves|
-#   isbn_shelves[isbn] = shelves.keys.sort
-# }
-# 
-# isbns = all_isbns.keys.sort
-# isbn_ind = {}
-# isbns.each_with_index { |isbn,ind|
-#   isbn_ind[isbn] = ind
-# }
-# 
-# 
-# 
-# 
-# 
-# 
-# #########################################################
-# require 'ffi'
-# 
-# BOOK=1
-# SHELF=2
-# SEARCH=0
-# ADD=1
-# SUB=2
-# SIMILAR=3
-# 
-# module Enzan
-#   extend FFI::Library
-#   ffi_lib "libenzan.so"
-# 
-#   class Freq < FFI::Struct
-#     layout(
-#            :index, :int,
-#            :freq, :int
-#            )
-#   end
-#   
-#   attach_function :shelves, [:int], :pointer
-#   attach_function :calc, [:int, :int, :int, :pointer, :pointer], :pointer
-#   attach_function :test, [:pointer], :int
-# end
-# 
-# a = FFI::MemoryPointer.new(Enzan::Freq, 5)
-# puts a
-# b = Enzan::Freq.new(a[0])
-# b[:index] = 10
-# b[:freq] = 20
-# c = Enzan::Freq.new(a[1])
-# c[:index] = 100
-# c[:freq] = 200
-# d = Enzan::Freq.new(a[2])
-# d[:index] = -1
-# d[:freq] = 1111
-# 
-# Enzan.test(a)
-# exit
-# 
-# p1 = Enzan.shelves(shelf_ind['suchi'])
-# p2 = Enzan.shelves(shelf_ind['yuco'])
-# p = Enzan.calc(ADD,SHELF,SHELF,p1,p2)
-# 
-# #puts p[0].read_int
-# #puts p[4].read_int
-# #puts p[8].read_int
-# 
-# suchibooks = Enzan.calc(SEARCH,SHELF,BOOK,p1,p1)
-# 
-# def list_freq(p)
-#   i = 0
-#   size = Enzan::Freq.size
-#   while true do
-#     foo = Enzan::Freq.new p+size*i
-#     puts foo[:index]
-#     puts foo[:freq]
-#     break if foo[:index] < 0
-#     i += 1
-#   end
-# end
-# 
-# list_freq(suchibooks)
-# exit
-# 
-# foo = Enzan::Freq.new suchibooks[8]
-# p Enzan::Freq.size
-# p foo.class
-# p foo[:index].class
-# p foo[:index]
-# p foo[:freq].class
-# p foo[:freq]
-# exit
-# 
-# foo = Enzan::Freq.new suchibooks[8]
-# p Enzan::Freq.size
-# p foo.class
-# p foo[:index].class
-# p foo[:index]
-# p foo[:freq].class
-# p foo[:freq]
-# exit
-
-
-
-i = 0
-ind = suchibooks[i*8].read_int
-while ind >= 0 do
-  puts ind
-  puts isbns[ind]
-  i += 1
-  ind = suchibooks[i*8].read_int
+    def test_shelf_similar
+      s = Shelves.new('増井研')
+      ss = s.similarshelves
+      assert ss.class == Shelves
+      assert ss.length > 0
+    end
+  end
 end
 
-exit
 
-similarshelf = Enzan.calc(SIMILAR,BOOK,SHELF,suchibooks,suchibooks)
-i = 0
-ind = similarshelf[i*8].read_int
-while ind >= 0 do
-  puts ind
-  puts shelfnames[ind]
-  i += 1
-  ind = similarshelf[i*8].read_int
-end
+# # # s = Shelves.new('増井','4569534074')
+# s = Shelves.new('増井研')
+# ss = s.similarshelves
+# p ss
+# exit
+# 
+# # books = Books.new('街角')
+# 
+# # s = Shelves.new('増井','suchi')
+# s = Shelves.new('yuco')
+# books = s.similarbooks
+# # books = s.books
+# p books
+# p books.class
+# p books.data.class
+# puts "-----"
+# books.data.each { |isbn,freq|
+#   puts Enzan.bookinfo[isbn]
+# }
+# 
+# # s = Shelves.new('4569534074')
+# # p s
