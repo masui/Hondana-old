@@ -2,6 +2,11 @@
 # -*- ruby -*-
 #
 
+#
+# FFIを使って演算を高速化する。とりあえず類似演算だけ
+# 2014/3/29
+#
+
 require 'ffi'
 
 BOOK=1; SHELF=2
@@ -70,9 +75,9 @@ class Enzan
           @@book_shelves[book].push(shelf)
         }
       }
-
       #
       # 本棚名、ISBNをソートした配列とその逆を計算する連想配列
+      # e.g. @@isbn_ind['1234567890'] = 100 <=> @@ind_isbn[100] = '1234567890'
       #
       @@ind_isbn = @@book_shelves.keys.sort
       @@isbn_ind = {}
@@ -88,31 +93,28 @@ class Enzan
   end
 
   # 本棚番号から本棚名を得る
-  def Enzan.ind_shelfname(ind)
-    @@ind_shelfname[ind]
+  # Enzan.ind_shelfname(10) または Enzan.ind_shelfname[10]
+  def Enzan.ind_shelfname(ind=nil)
+    ind ? @@ind_shelfname[ind] : @@ind_shelfname
   end
 
   # 本番号からISBNを得る
-  def Enzan.ind_isbn(ind)
-    @@ind_isbn[ind]
+  def Enzan.ind_isbn(ind=nil)
+    ind ? @@ind_isbn[ind] : @@ind_isbn
   end
 
   # 本棚名から本棚番号を得る
-  def Enzan.shelfname_ind(shelfname)
-    @@shelfname_ind[shelfname]
+  def Enzan.shelfname_ind(shelfname=nil)
+    shelfname ? @@shelfname_ind[shelfname] : @@shelfname_ind
   end
 
   # ISBNから本番号を得る
-  def Enzan.isbn_ind(isbn)
-    @@isbn_ind[isbn]
+  def Enzan.isbn_ind(isbn=nil)
+    isbn ? @@isbn_ind[isbn] : @@isbn_ind
   end
 
   def Enzan.bookinfo(isbn=nil)
-    if isbn.nil? then
-      @@bookinfo
-    else
-      @@bookinfo[isbn]
-    end
+    isbn ? @@bookinfo[isbn] : @@bookinfo
   end
 
   def Enzan.shelf_books(shelf)
@@ -163,11 +165,11 @@ class EnzanData
   # 仕様がよくわかっていないのでこれで良いのか不明だがとりあえず動く
   #
   def rbdata2cdata(type)
-    p = FFI::MemoryPointer.new(Enzan::Freq, @data.length+1)
+    p = FFI::MemoryPointer.new(Enzan::Freq, @data.length+1)  # p = malloc(sizeof(Freq) * (length+1)) ?
     i = 0
     @data.keys.sort.each { |key|
       val = @data[key]
-      f = Enzan::Freq.new(p[i])
+      f = Enzan::Freq.new(p[i]) # p[i]のアドレスを取得?
       f[:index] = (type == BOOK ? Enzan.isbn_ind(key) : Enzan.shelfname_ind(key))
       # ind(key)
       f[:freq] = val
@@ -184,7 +186,7 @@ class EnzanData
     size = Enzan::Freq.size
     data = {}
     while true do
-      f = Enzan::Freq.new p+size*i
+      f = Enzan::Freq.new p+size*i # p[i]のアドレスを取得?
       break if f[:index] < 0
       ind = f[:index]
       n = (type == BOOK ? Enzan.ind_isbn(ind) : Enzan.ind_shelfname(ind))
@@ -331,13 +333,13 @@ if __FILE__ == $0 then
 
     def test_enzan1
       (0..100).each { |ind|
-        shelfname = Enzan.ind_shelfname(ind)
-        assert ind == Enzan.shelfname_ind(shelfname)
+        shelfname = Enzan.ind_shelfname[ind]
+        assert ind == Enzan.shelfname_ind[shelfname]
       }
       (0..100).each { |ind|
-        isbn = Enzan.ind_isbn(ind)
+        isbn = Enzan.ind_isbn[ind]
         assert isbn.length == 10
-        assert ind == Enzan.isbn_ind(isbn)
+        assert ind == Enzan.isbn_ind[isbn]
       }
     end
 
