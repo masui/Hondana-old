@@ -14,17 +14,17 @@ static int compare(const void *p1, const void *p2)
 }
 
 //
-// fl = shelf_books[shelf_ind("å¢—äº•")];
+// fl = shelf_books[shelf_ind("’Áı’°æ")];
 // fl = calc(SIMILAR,BOOK,SHELF,fl);
 //
-struct Freq *calc(Command command, Kind inputkind, Kind outputkind, struct Freq *list1, struct Freq *list2)
+struct Freq *calc(Command command, Kind inputkind, Kind outputkind, struct Freq *list1, struct Freq *list2, int limit)
 {
 	int i;
 	struct Freq *result;
 
 	if(inputkind == BOOK){
 		if(outputkind == SHELF){
-			if(command == SEARCH){ // ã“ã®æœ¬ã‚’æŒã£ã¦ã„ã‚‹æœ¬æ£šã‚’ãƒªã‚¹ãƒˆã™ã‚‹
+			if(command == SEARCH){ // ’¤³’¤Î’ËÜ’¤ò’»ı’¤Ã’¤Æ’¤¤’¤ë’ËÜ’Ãª’¤ò’¥ê’¥¹’¥È’¤¹’¤ë
 				int len = freq_length(list1);
 				struct Freq *shelflist = _book_shelves[list1[0].index];
 				for(i=0;i<len;i++){
@@ -33,11 +33,11 @@ struct Freq *calc(Command command, Kind inputkind, Kind outputkind, struct Freq 
 				return shelflist;
 			}
 			if(command == ADD){
-				struct Freq *shelves1 = calc(SEARCH,BOOK,SHELF,list1,NULL);
-				struct Freq *shelves2 = calc(SEARCH,BOOK,SHELF,list2,NULL);
-				return calc(ADD,SHELF,SHELF,shelves1,shelves2);
+				struct Freq *shelves1 = calc(SEARCH,BOOK,SHELF,list1,NULL,limit);
+				struct Freq *shelves2 = calc(SEARCH,BOOK,SHELF,list2,NULL,limit);
+				return calc(ADD,SHELF,SHELF,shelves1,shelves2,limit);
 			}
-			if(command == SIMILAR){ // æœ¬ãƒªã‚¹ãƒˆã«è¿‘ã„æœ¬æ£šãƒªã‚¹ãƒˆã‚’è¿”ã™
+			if(command == SIMILAR){ // ’ËÜ’¥ê’¥¹’¥È’¤Ë’¶á’¤¤’ËÜ’Ãª’¥ê’¥¹’¥È’¤ò’ÊÖ’¤¹
 				int query_books_length = freq_length(list1);
 				ScoreEntry *entries = (ScoreEntry*)alloca(sizeof(ScoreEntry)*nshelves);
 				for(i=0;i<nshelves;i++){
@@ -48,7 +48,8 @@ struct Freq *calc(Command command, Kind inputkind, Kind outputkind, struct Freq 
 					
 				}
 				qsort(entries, nshelves, sizeof(ScoreEntry), compare);
-				int len = min(nshelves,SIMILAR_LIMIT);
+				if(limit == 0) limit = SIMILAR_LIMIT;
+				int len = min(nshelves,limit);
 				result = (struct Freq*)malloc(sizeof(struct Freq)*(len+1));
 				for(i=0;i<len;i++){
 					result[i].index = entries[i].ind;
@@ -59,15 +60,15 @@ struct Freq *calc(Command command, Kind inputkind, Kind outputkind, struct Freq 
 			}
 		}
 		if(outputkind == BOOK){
-			if(command == SEARCH){ // ä½•ã‚‚ã—ãªã„
+			if(command == SEARCH){ // ’²¿’¤â’¤·’¤Ê’¤¤
 				return list1;
 			}
 			if(command == ADD){
 				return freq_join(list1,list2);
 			}
-			if(command == SIMILAR){ // æœ¬ãƒªã‚¹ãƒˆã«è¿‘ã„æœ¬ã‚’ãƒªã‚¹ãƒˆ?
-				struct Freq *shelflist = calc(SEARCH,BOOK,SHELF,list1,list2);
-				return calc(SIMILAR,SHELF,BOOK,shelflist,NULL);
+			if(command == SIMILAR){ // ’ËÜ’¥ê’¥¹’¥È’¤Ë’¶á’¤¤’ËÜ’¤ò’¥ê’¥¹’¥È?
+				struct Freq *shelflist = calc(SEARCH,BOOK,SHELF,list1,list2,limit);
+				return calc(SIMILAR,SHELF,BOOK,shelflist,NULL,limit);
 			}
 		}
 	}
@@ -78,14 +79,11 @@ struct Freq *calc(Command command, Kind inputkind, Kind outputkind, struct Freq 
 			}
 			if(command == ADD){
 				struct Freq *p = freq_join(list1,list2);
-				printf("%d\n",p[0].index);
-				printf("%d\n",p[1].index);
-				printf("%d\n",p[2].index);
 				return p;
 			}
-			if(command == SIMILAR){ // æœ¬æ£šãƒªã‚¹ãƒˆã«è¿‘ã„æœ¬æ£šã‚’ãƒªã‚¹ãƒˆ
-				struct Freq *isbnlist = calc(SEARCH,SHELF,BOOK,list1,list2);
-				return calc(SIMILAR,BOOK,SHELF,isbnlist,NULL);
+			if(command == SIMILAR){ // ’ËÜ’Ãª’¥ê’¥¹’¥È’¤Ë’¶á’¤¤’ËÜ’Ãª’¤ò’¥ê’¥¹’¥È
+				struct Freq *isbnlist = calc(SEARCH,SHELF,BOOK,list1,list2,limit);
+				return calc(SIMILAR,BOOK,SHELF,isbnlist,NULL,limit);
 			}
 		}
 		if(outputkind == BOOK){
@@ -97,12 +95,12 @@ struct Freq *calc(Command command, Kind inputkind, Kind outputkind, struct Freq 
 				}
 				return booklist;
 			}
-			if(command == ADD){ // å¿…è¦ãªã®ã‹?
-				struct Freq *books1 = calc(SEARCH,SHELF,BOOK,list1,NULL);
-				struct Freq *books2 = calc(SEARCH,SHELF,BOOK,list2,NULL);
-				return calc(ADD,BOOK,BOOK,books1,books2);
+			if(command == ADD){ // ’É¬’Í×’¤Ê’¤Î’¤«?
+				struct Freq *books1 = calc(SEARCH,SHELF,BOOK,list1,NULL,limit);
+				struct Freq *books2 = calc(SEARCH,SHELF,BOOK,list2,NULL,limit);
+				return calc(ADD,BOOK,BOOK,books1,books2,limit);
 			}
-			if(command == SIMILAR){ // æœ¬æ£šãƒªã‚¹ãƒˆã«è¿‘ã„æœ¬ãƒªã‚¹ãƒˆã‚’è¿”ã™
+			if(command == SIMILAR){ // ’ËÜ’Ãª’¥ê’¥¹’¥È’¤Ë’¶á’¤¤’ËÜ’¥ê’¥¹’¥È’¤ò’ÊÖ’¤¹
 				int query_shelves_length = freq_length(list1);
 				ScoreEntry *entries = (ScoreEntry*)alloca(sizeof(ScoreEntry)*nbooks);
 				for(i=0;i<nbooks;i++){
@@ -112,7 +110,8 @@ struct Freq *calc(Command command, Kind inputkind, Kind outputkind, struct Freq 
 					entries[i].ind = i;
 				}
 				qsort(entries, nbooks, sizeof(ScoreEntry), compare);
-				int len = min(nbooks,SIMILAR_LIMIT);
+				if(limit == 0) limit = SIMILAR_LIMIT;
+				int len = min(nbooks,limit);
 				result = (struct Freq*)malloc(sizeof(struct Freq)*(len+1));
 				for(i=0;i<len;i++){
 					result[i].index = entries[i].ind;
@@ -120,6 +119,7 @@ struct Freq *calc(Command command, Kind inputkind, Kind outputkind, struct Freq 
 				}
 				result[len].index = -1;
 
+				/*
 				struct Freq *f;
 				int k;
 				for(k=0;k<20;k++){
@@ -128,6 +128,7 @@ struct Freq *calc(Command command, Kind inputkind, Kind outputkind, struct Freq 
 						if(f[i].index < 0) break;
 					}
 				}
+				*/
 
 				return result;
 			}
@@ -136,6 +137,7 @@ struct Freq *calc(Command command, Kind inputkind, Kind outputkind, struct Freq 
 	return NULL;
 }
 
+/*
 struct Freq *shelves(int ind)
 {
 	printf("ind = %d\n",ind);
@@ -162,4 +164,4 @@ int test(struct Freq *p)
 	printf("length = %d\n",freq_length(p));
 	freq_dump(p);
 }
-
+*/

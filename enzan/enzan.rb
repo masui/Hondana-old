@@ -23,7 +23,7 @@ class Enzan
            )
   end
 
-  attach_function :calc, [:int, :int, :int, :pointer, :pointer], :pointer # Cの演算関数
+  attach_function :calc, [:int, :int, :int, :pointer, :pointer, :int], :pointer # Cの演算関数
 
 
   @@initialized = false
@@ -233,17 +233,17 @@ class Shelves < EnzanData
   end
 
   # 本棚(リスト)に近い本棚を得る
-  def similarshelves
-    a = rbdata2cdata(SHELF)                     # @dataを2次元配列に変換
-    res = Enzan.calc(SIMILAR,SHELF,SHELF,a,nil) # C関数呼び出し
-    shelves = cdata2rbdata(res,SHELF)           # 2次元配列をハッシュに戻す
+  def similarshelves(limit=0)
+    a = rbdata2cdata(SHELF)                           # @dataを2次元配列に変換
+    res = Enzan.calc(SIMILAR,SHELF,SHELF,a,nil,limit) # C関数呼び出し
+    shelves = cdata2rbdata(res,SHELF)                 # 2次元配列をハッシュに戻す
     Shelves.new(shelves)
   end
 
   # 本棚(リスト)に近い本を得る
-  def similarbooks
+  def similarbooks(limit=0)
     a = rbdata2cdata(SHELF)
-    res = Enzan.calc(SIMILAR,SHELF,BOOK,a,nil)
+    res = Enzan.calc(SIMILAR,SHELF,BOOK,a,nil,limit)
     books = cdata2rbdata(res,BOOK)
     Books.new(books)
   end
@@ -294,17 +294,17 @@ class Books < EnzanData
   end
 
   # 本(リスト)に近い本を得る
-  def similarbooks
-    a = rbdata2cdata(BOOK)                     # @dataを2次元配列に変換
-    res = Enzan.calc(SIMILAR,BOOK,BOOK,a,nil)  # C関数呼び出し
-    books = cdata2rbdata(res,BOOK)             # 2次元配列をハッシュに戻す
+  def similarbooks(limit=0)
+    a = rbdata2cdata(BOOK)                           # @dataを2次元配列に変換
+    res = Enzan.calc(SIMILAR,BOOK,BOOK,a,nil,limit)  # C関数呼び出し
+    books = cdata2rbdata(res,BOOK)                   # 2次元配列をハッシュに戻す
     Books.new(books)
   end
 
   # 本(リスト)に近い本棚を得る
-  def similarshelves
+  def similarshelves(limit)
     a = rbdata2cdata(BOOK)
-    res = Enzan.calc(SIMILAR,BOOK,SHELF,a,nil)
+    res = Enzan.calc(SIMILAR,BOOK,SHELF,a,nil,limit)
     shelves = cdata2rbdata(res,SHELF)
     Shelves.new(shelves)
   end
@@ -316,6 +316,37 @@ class Books < EnzanData
     }
   end
 end
+
+class String
+  def books
+    Books.new(self)
+  end
+
+  def shelves
+    Shelves.new(self)
+  end
+end
+
+class Array
+  def books
+    Books.new(*self)
+  end
+
+  def shelves
+    Shelves.new(*self)
+  end
+end
+
+# def data(name)
+#   hash = Digest::MD5.new.hexdigest(name).to_s
+#   file = "#{Enzan.rootdir}/enzan/data/#{hash}"
+#   if File.exist?(file) then
+#     Marshal.load(File.open("#{Enzan.rootdir}/enzan/data/#{hash}"))
+#   else
+#     EnzanData.new
+#   end
+# end
+
 
 #
 # テスト
@@ -463,5 +494,15 @@ if __FILE__ == $0 then
         assert freq == 1 || freq == 2
       }
     end
+
+    def test_enzan
+      u = "梅田 望夫".books.similarbooks(40)
+      found = false
+      u.each { |isbn,freq|
+        found = true if Enzan.bookinfo(isbn)['authors'] =~ /千賀/
+      }
+      assert found
+    end
+
   end
 end

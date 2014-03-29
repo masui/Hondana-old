@@ -23,8 +23,7 @@ libfoo.so: foo.o
 foo.o: foo.c
 	cc -c foo.c
 
-test:
+test: libenzan.so
 	ruby enzan.rb
-
 
 
