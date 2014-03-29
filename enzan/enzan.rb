@@ -318,6 +318,12 @@ class Books < EnzanData
 end
 
 class String
+  if RUBY_VERSION < "1.9" then
+    def force_encoding(s)
+      s
+    end
+  end
+
   def books
     Books.new(self)
   end
