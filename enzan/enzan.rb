@@ -245,6 +245,12 @@ class Shelves < EnzanData
     books = cdata2rbdata(res,BOOK)
     Books.new(books)
   end
+
+  def dump
+    @data.each { |shelfname,freq|
+      puts "#{shelfname} => #{freq}"
+    }
+  end
 end
 
 class Books < EnzanData
@@ -299,6 +305,13 @@ class Books < EnzanData
     res = Enzan.calc(SIMILAR,BOOK,SHELF,a,nil)
     shelves = cdata2rbdata(res,SHELF)
     Shelves.new(shelves)
+  end
+
+  def dump
+    @data.each { |isbn,freq|
+      info = Enzan.bookinfo(isbn)
+      puts "#{isbn} => #{freq}, #{info['title']} / #{info['authors']}"
+    }
   end
 end
 
@@ -355,6 +368,7 @@ if __FILE__ == $0 then
         found = true if key == '4480062858' # ウェブ進化論
       }
       assert found
+
       # 「情報視覚化の本棚」に「ウェブ進化論」はあるか?
       s = Shelves.new('情報視覚化')
       b = s.books
@@ -366,10 +380,15 @@ if __FILE__ == $0 then
     end
 
     def test_shelf_similar
-      s = Shelves.new('増井研')
+      s = Shelves.new('増井')
       ss = s.similarshelves
       assert ss.class == Shelves
       assert ss.length > 0
+      found = false
+      ss.each { |shelf,freq|
+        found = true if shelf == '増井研'
+      }
+      assert found
     end
 
     def test_book_class
@@ -402,6 +421,15 @@ if __FILE__ == $0 then
         found = true if key == '増井'
       }
       assert found
+
+      # 「ウェブ進化論」の本棚リストに「情報視覚化の本棚」はあるか?
+      b = Books.new('4480062858') # ウェブ進化論
+      s = b.shelves
+      found = false
+      s.each { |key,val|
+        found = true if key == '情報視覚化'
+      }
+      assert !found
     end
 
     def test_book_similar
@@ -409,32 +437,29 @@ if __FILE__ == $0 then
       bb = b.similarbooks
       assert bb.class == Books
       assert bb.length > 0
+
+      found = false
+      bb.each { |isbn,freq|
+        found = true if Enzan.bookinfo(isbn)['title'] =~ /「へんな会社」のつくり方/
+      }
+      assert found
     end
 
-# bookinfoもテストしたい
+    def test_bookinfo
+      info = Enzan.bookinfo('4480062858') # ウェブ進化論
+      assert info['authors'] =~ /梅田/
+    end
+
+    def test_shelf_each
+      s = Shelves.new('増井','suchi')
+      s.each { |shelf,freq|
+        assert shelf == '増井' || shelf == 'suchi'
+        assert freq == 1
+      }
+      s.books.each { |isbn,freq|
+        assert isbn.length == 10
+        assert freq == 1 || freq == 2
+      }
+    end
   end
 end
-
-
-# # # s = Shelves.new('増井','4569534074')
-# s = Shelves.new('増井研')
-# ss = s.similarshelves
-# p ss
-# exit
-# 
-# # books = Books.new('街角')
-# 
-# # s = Shelves.new('増井','suchi')
-# s = Shelves.new('yuco')
-# books = s.similarbooks
-# # books = s.books
-# p books
-# p books.class
-# p books.data.class
-# puts "-----"
-# books.data.each { |isbn,freq|
-#   puts Enzan.bookinfo[isbn]
-# }
-# 
-# # s = Shelves.new('4569534074')
-# # p s
