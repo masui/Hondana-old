@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # -*- encoding: utf-8 -*-
 # -*- ruby -*-
 #
@@ -14,7 +15,7 @@ SEARCH=0; ADD=1; SUB=2;  SIMILAR=3
 
 class Enzan
   extend FFI::Library
-  ffi_lib "libenzan.so"
+  ffi_lib "lib/libenzan.so"
 
   class Freq < FFI::Struct
     layout(
@@ -29,12 +30,12 @@ class Enzan
   @@initialized = false
 
   # 初期化にかなり時間がかかるのをなんとかしたいものだが...
-  def initialize(rootdir="/Users/masui/Hondana")
+  def initialize(rootdir="/Users/masui/Hondana/enzan")
     # #{rootdir}/enzan の下にmarshal.bookinfoとmarshal.shelfbooksというMarshalファイルがある
     if !@@initialized then
       @@initialized = true
       @@rootdir = rootdir
-      File.open("#{@@rootdir}/enzan/marshal.bookinfo"){ |f|
+      File.open("#{@@rootdir}/marshal.bookinfo"){ |f|
         data = Marshal.load(f)
         # data['0123456789'] = { title:'タイトル', authors:'著者', isbn:'1234567890' }
         @@bookinfo = {}
@@ -46,7 +47,7 @@ class Enzan
           @@bookinfo[isbn] = bookdata
         }
       }
-      File.open("#{@@rootdir}/enzan/marshal.shelfbooks"){ |f|
+      File.open("#{@@rootdir}/marshal.shelfbooks"){ |f|
         data = Marshal.load(f)
 	# data['増井'] = ['0123456789', '1234567890', ...]
         @@shelf_books = {}
@@ -129,7 +130,7 @@ end
 class EnzanData
   include Enumerable
   def initialize(*args)
-    Enzan.new
+    Enzan.new("/home/masui/hondana-lens/lib")
     @data = {}
   end
 
@@ -223,6 +224,10 @@ class Shelves < EnzanData
     end
   end
 
+  def shelves
+    self
+  end
+
   # 本棚(リスト)に入っている本のリストを得る
   def books
     b = Books.new
@@ -282,6 +287,10 @@ class Books < EnzanData
         end
       }
     end
+  end
+
+  def books
+    self
   end
 
   # 本(リスト)にが登録されている本棚のリストを得る
@@ -362,7 +371,7 @@ if __FILE__ == $0 then
 
   class EnzanTest < Test::Unit::TestCase
     def setup
-      Enzan.new
+      Enzan.new(".")
     end
     
     def teardown

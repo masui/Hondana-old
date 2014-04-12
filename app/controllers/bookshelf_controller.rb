@@ -48,7 +48,7 @@ class BookshelfController < ApplicationController
 
   def create
     shelfname = params[:shelfname]
-    if shelfname == '' || shelfname.index('<') || shelfname =~ /%3c/i || cookies[:List] != 'Hondana' then
+    if shelfname == '' || shelfname.index('<') || shelfname =~ /%3c/i || shelfname =~ /^[\d\w]{32}$/ || cookies[:List] != 'Hondana' then
       redirect_to :action => 'list'
     else
       @shelf = Shelf.find(:first, :conditions => ["name = ?", shelfname])

@@ -1,4 +1,4 @@
-CFLAGS = -I/usr/local/include/CUnit
+CFLAGS = -I/usr/local/include/CUnit -fPIC
 LIBS = /usr/local/lib/libcunit.a
 
 all: test
