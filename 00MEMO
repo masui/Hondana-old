@@ -1,0 +1,3 @@
+Python-urllibというのを使った謎アクセスがきてたので排除 2014/04/12 09:18:17
+アクセスに残らないようにした
+  http://www.multiburst.net/sometime-php/2009/06/access-deny-from-bad-agent/
