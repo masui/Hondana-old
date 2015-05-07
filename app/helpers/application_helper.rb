@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # The methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   @@IMAGEPAT = /\.(jpg|jpeg|png|gif|tif|tiff)$/i
@@ -13,9 +14,12 @@ module ApplicationHelper
 #    s.gsub!(/\[\[([^\]]*)\]\]/){ link($1,shelfname) }
 #    s
     s.to_s.
-    gsub(/<(\/?(b|i|br|p|ul|ol|li|dl|dt|dd|hr|pre|blockquote|del))>/i,'LBRA!\1!RBRA').
+    gsub(/<(\/?(b|i|br|p|ul|ol|li|dl|dt|dd|hr|pre|blockquote|del))/i,'LBRA!\1!').
     gsub(/</,'&lt;').
-    gsub(/LBRA!([^!]*)!RBRA/,'<\1>').
+    gsub(/LBRA!([^!]*)!/,'<\1').
+#    gsub(/<(\/?(b|i|br|p|ul|ol|li|dl|dt|dd|hr|pre|blockquote|del))>/i,'LBRA!\1!RBRA').
+#    gsub(/</,'&lt;').
+#    gsub(/LBRA!([^!]*)!RBRA/,'<\1>').
     gsub(/\[\[([^\]]*)\]\]/){ link($1,shelfname.to_s) }
   end
 

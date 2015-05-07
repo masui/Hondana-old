@@ -1,3 +1,4 @@
+# -*- coding: euc-jp -*-
 module BookShelfHelper
   IMAGEPAT = /\.(jpg|jpeg|png|gif|tif|tiff)$/i
   HTMLPAT = /^(http|https|mailto|ftp):/
@@ -5,12 +6,17 @@ module BookShelfHelper
   CGIPAT = /\w+\.cgi$/
 
   def expand_tag(s,shelfname)
-    s = s.to_s
-    s.gsub!(/<(\/?(b|br|p|ul|ol|li|dl|dt|dd|hr|pre|blockquote|del))>/i,'LBRA!\1!RBRA')
-    s.gsub!(/</,'&lt;')
-    s.gsub!(/LBRA!([^!]*)!RBRA/,'<\1>')
-    s.gsub!(/\[\[([^\]]*)\]\]/){ link($1,shelfname.to_s) }
-    s
+    s = s.to_s.
+    gsub(/<(\/?(b|i|br|p|ul|ol|li|dl|dt|dd|hr|pre|blockquote|del))/i,'LBRA!\1!').
+    gsub(/</,'&lt;').
+    gsub(/LBRA!([^!]*)!/,'<\1').
+    gsub(/\[\[([^\]]*)\]\]/){ link($1,shelfname.to_s) }
+#    s = s.to_s
+#    s.gsub!(/<(\/?(b|br|p|ul|ol|li|dl|dt|dd|hr|pre|blockquote|del))>/i,'LBRA!\1!RBRA')
+#    s.gsub!(/</,'&lt;')
+#    s.gsub!(/LBRA!([^!]*)!RBRA/,'<\1>')
+#    s.gsub!(/\[\[([^\]]*)\]\]/){ link($1,shelfname.to_s) }
+#    s
   end
 
   def link(s,shelfname)
