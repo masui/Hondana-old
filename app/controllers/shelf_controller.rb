@@ -280,6 +280,7 @@ class ShelfController < ApplicationController
     getshelf
     newname = params[:shelf][:name]
 
+    # spam対策のため、!! を最後につけたときだけ名前変更を許しているような
     if newname !~ /!!$/ then
       redirect_to :action => 'show', :shelfname => @shelf.name
       return

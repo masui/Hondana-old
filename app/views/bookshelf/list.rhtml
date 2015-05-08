@@ -56,8 +56,13 @@
               <tr>
                 <td align="center">
                   <% form_tag({:action => 'create'}) do %>
-                    蔵書、気になる本、共有の本棚、何でもどうぞ。本棚の名前を入力して「作成」ボタンを押すと本棚ができます。
-                    <%= text_field_tag 'shelfname' %> の本棚を <%= submit_tag '作成' %>
+		    <% randno = rand(10000) %>
+                    <!-- 蔵書、気になる本、共有の本棚、何でもどうぞ。--> 
+		    作成したい本棚の名前と登録番号 (<%= randno %>) を入力して「作成」ボタンを押すと本棚ができます。
+                    <%= text_field_tag 'shelfname', '', :placeholder => '本棚名', :size => 12 %>
+                    <%= text_field_tag 'response', '', :placeholder => randno, :size => 4 %>
+                    <%= hidden_field_tag 'challenge', randno %>
+		    <%= submit_tag '作成' %>
                   <% end %>
                   <%= Shelf.count %>本棚　<%= Book.count %>冊　<%= link_to '更新順本棚一覧', :controller => 'bookshelf', :action => 'alllist' %>
                   <hr noshade="noshade" size="1"/>
@@ -73,10 +78,12 @@
 		  <hr noshade="noshade" size="1"/>
 		  <b>News</b><br/><br/>
 		  <!-- ********************************************************************************* -->
+		  <!--
 		  2014/4/14
 		  <ul>
 		    <li>spam対策のため現在新しい本棚を作れない状況です。CAPTCHAのようなものを導入したいと思います。本棚作成したい方は増井にご連絡下さい。
 		  </ul>
+		  -->
 		  2014/1/11
 		  <ul>
 		    <li><a href="https://github.com/masui/Hondana">GitHubレポジトリ</a>に<a href="https://github.com/masui/Hondana/issues">issues</a>をリストしました

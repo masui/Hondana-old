@@ -47,31 +47,37 @@ class BookshelfController < ApplicationController
   end
 
   def create
-    redirect_to :action => 'list'
-    # shelfname = params[:shelfname]
-    # if shelfname == '' || shelfname.index('<') || shelfname =~ /%3c/i ||
-    #     shelfname =~ /^[\d\w]{32}$/ ||
-    #     shelfname =~ /Ita7ef/ ||
-    #     (shelfname =~ /^[\d\w]{16}$/ && shelfname =~ /[a-z]/ && shelfname =~ /[A-Z]/) ||
-    #     cookies[:List] != 'Hondana' ||
-    #     cookies[:Hondana] != 'xxxx' then
-    #   redirect_to :action => 'list'
-    # else
-    #   @shelf = Shelf.find(:first, :conditions => ["name = ?", shelfname])
-    #   if @shelf.nil? then
-    #     @shelf = Shelf.new
-    #     @shelf.name = params[:shelfname]
-    #     @shelf.description = ''
-    #     @shelf.url = ''
-    #     @shelf.affiliateid = ''
-    #     @shelf.theme = ''
-    #     @shelf.themeurl = ''
-    #     @shelf.listtype = 'image'
-    #     @shelf.sorttype = 'recent'
-    #     @shelf.modtime = Time.now
-    #     @shelf.save
-    #   end
-    #   redirect_to :controller => 'shelf', :action => 'show', :shelfname => @shelf.name
-    # end
+    # redirect_to :action => 'list'
+    shelfname = params[:shelfname]
+    challenge = params[:challenge]
+    response = params[:response]
+    if challenge != response then
+      redirect_to :action => 'list'
+    else
+      if shelfname == '' || shelfname.index('<') || shelfname =~ /%3c/i ||
+          shelfname =~ /^[\d\w]{32}$/ ||
+          shelfname =~ /Ita7ef/ ||
+          (shelfname =~ /^[\d\w]{16}$/ && shelfname =~ /[a-z]/ && shelfname =~ /[A-Z]/) ||
+          cookies[:List] != 'Hondana' ||
+          cookies[:Hondana] != 'xxxx' then
+        redirect_to :action => 'list'
+      else
+        @shelf = Shelf.find(:first, :conditions => ["name = ?", shelfname])
+        if @shelf.nil? then
+          @shelf = Shelf.new
+          @shelf.name = params[:shelfname]
+          @shelf.description = ''
+          @shelf.url = ''
+          @shelf.affiliateid = ''
+          @shelf.theme = ''
+          @shelf.themeurl = ''
+          @shelf.listtype = 'image'
+          @shelf.sorttype = 'recent'
+          @shelf.modtime = Time.now
+          @shelf.save
+        end
+        redirect_to :controller => 'shelf', :action => 'show', :shelfname => @shelf.name
+      end
+    end
   end
 end
